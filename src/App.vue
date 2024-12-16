@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import QuestionIcon from './components/icons/QuestionIcon.vue'
 import SunIcon from './components/icons/SunIcon.vue'
+import TeeOptions from './components/TeeOptions.vue'
+import TeeView from './components/TeeView.vue'
 </script>
 
 <template>
@@ -17,6 +19,18 @@ import SunIcon from './components/icons/SunIcon.vue'
           <button type="button" class="btn btn-primary btn-sm rounded-pill ms-2">
             <QuestionIcon />
           </button>
+        </div>
+      </div>
+
+      <div class="row mb-2">
+        <div class="col">
+          <TeeView />
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col">
+          <TeeOptions />
         </div>
       </div>
     </div>
