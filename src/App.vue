@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import DarkModeButton from './components/DarkModeButton.vue'
 import QuestionIcon from './components/icons/QuestionIcon.vue'
-import SunIcon from './components/icons/SunIcon.vue'
 import TeeOptions from './components/TeeOptions.vue'
 import TeeView from './components/TeeView.vue'
 </script>
@@ -13,9 +13,7 @@ import TeeView from './components/TeeView.vue'
           <h1>TeeView</h1>
         </div>
         <div class="col d-flex justify-content-end align-items-center">
-          <button type="button" class="btn btn-warning btn-sm rounded-pill ms-2">
-            <SunIcon />
-          </button>
+          <DarkModeButton />
           <button type="button" class="btn btn-primary btn-sm rounded-pill ms-2">
             <QuestionIcon />
           </button>
