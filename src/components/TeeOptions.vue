@@ -1,19 +1,19 @@
+<script setup lang="ts">
+import Tab from './tabs/Tab.vue'
+import Tabs from './tabs/Tabs.vue'
+</script>
+
 <template>
   <div id="teeOptions" class="card">
-    <ul class="nav nav-tabs">
-      <li class="nav-item">
-        <a class="nav-link active" aria-current="page" href="#">Skin</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="#">Color</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="#">Options</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link disabled" aria-disabled="true">Export</a>
-      </li>
-    </ul>
+    <Tabs>
+      <Tab title="Skin" class="card-body">
+        <div>A</div>
+      </Tab>
+      <Tab title="Color" class="card-body">
+        <div>B</div>
+      </Tab>
+      <Tab title="Options" disabled class="card-body"></Tab>
+    </Tabs>
   </div>
 </template>
 
