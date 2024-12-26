@@ -1,8 +1,12 @@
 <script setup lang="ts">
+import { ref } from 'vue'
 import DarkModeButton from './components/DarkModeButton.vue'
 import QuestionIcon from './components/icons/QuestionIcon.vue'
 import TeeOptions from './components/TeeOptions.vue'
 import TeeView from './components/TeeView.vue'
+import type { IRendererOptions } from './lib/Renderer'
+
+const options = ref<IRendererOptions>()
 </script>
 
 <template>
@@ -22,13 +26,13 @@ import TeeView from './components/TeeView.vue'
 
       <div class="row mb-2">
         <div class="col">
-          <TeeView />
+          <TeeView :options="options" />
         </div>
       </div>
 
       <div class="row">
         <div class="col">
-          <TeeOptions />
+          <TeeOptions @change="options = $event" />
         </div>
       </div>
     </div>

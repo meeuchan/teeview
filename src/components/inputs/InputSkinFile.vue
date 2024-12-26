@@ -25,6 +25,8 @@ async function setSkin() {
   }
 
   const img = await getImageFromFile(file)
+  img.setAttribute('name', file.name)
+  img.setAttribute('lastModified', file.lastModified.toString())
 
   if (img.width / img.height !== 2 || img.width < 256 || img.height < 128) {
     setError('The image must have a 2:1 size ratio and a minimum size of 256x128px.')
