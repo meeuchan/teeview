@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 import Tab from './tabs/Tab.vue'
 import Tabs from './tabs/Tabs.vue'
-import TeeOptionsSkin from './TeeOptionsSkin.vue'
+import TeeSettingsSkin from './TeeSettingsSkin.vue'
 import type { IRendererOptions } from '@/lib/Renderer'
 
 const skin = ref<HTMLImageElement>()
@@ -25,7 +25,7 @@ function buildOptions() {
   <div id="teeOptions" class="card">
     <Tabs>
       <Tab title="Skin" class="card-body">
-        <TeeOptionsSkin @change="((skin = $event), buildOptions())" />
+        <TeeSettingsSkin @change="((skin = $event), buildOptions())" />
       </Tab>
       <Tab title="Color" :disabled="!skin" class="card-body">
         <div>B</div>
