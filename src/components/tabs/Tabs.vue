@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { provide, ref, type RendererElement, type RendererNode, type VNode } from 'vue'
+import { computed, provide, ref, type RendererElement, type RendererNode, type VNode } from 'vue'
 import { ActiveTabKey } from './TabSymbols'
 
 type ITabNode = VNode<RendererNode, RendererElement, { title: string; disabled: string }>
@@ -7,8 +7,8 @@ type ITabNode = VNode<RendererNode, RendererElement, { title: string; disabled: 
 const slots = defineSlots<{
   default(): ITabNode[]
 }>()
-const tabs = slots.default()
-const activeTabKey = ref(tabs[0].props?.title || '')
+const tabs = computed(() => slots.default())
+const activeTabKey = ref(tabs.value[0].props?.title || '')
 provide(ActiveTabKey, activeTabKey)
 
 function setTabActive(tab: ITabNode) {
@@ -26,7 +26,7 @@ function isTabDisabled(tab: ITabNode) {
 
 <template>
   <ul class="nav nav-tabs">
-    <li v-for="tab in tabs" class="nav-item">
+    <li v-for="tab in tabs" :key="tab.props?.title" class="nav-item">
       <button
         @click="setTabActive(tab)"
         class="nav-link"
