@@ -4,10 +4,13 @@ import { EyeType, PartType } from './Parts'
 export class Skin {
   private _img: HTMLImageElement
   private _cache: Record<string, HTMLCanvasElement> = {}
-
   private _scale: number
-  public get scale() {
-    return this._scale
+
+  public get width() {
+    return this._img.width
+  }
+  public get height() {
+    return this._img.height
   }
 
   constructor(img: HTMLImageElement) {
