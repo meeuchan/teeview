@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { defineProps, onMounted, ref, useTemplateRef, watch } from 'vue'
+import { onMounted, ref, useTemplateRef, watch } from 'vue'
 import { Renderer, type IRendererOptions } from '@/lib/Renderer'
 
 const props = defineProps<{

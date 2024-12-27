@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, defineEmits } from 'vue'
+import { ref } from 'vue'
 import InputSkinFile from './inputs/InputSkinFile.vue'
 import LinkTo from './LinkTo.vue'
 
