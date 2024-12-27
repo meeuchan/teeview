@@ -26,7 +26,9 @@ function setSkin(img: HTMLImageElement) {
         </p>
         <InputSkinFile @input="setSkin($event)" />
       </div>
-      <div class="col text-end"><img id="skinPreview" :src="skin?.src" /></div>
+      <div class="col text-end">
+        <img id="skinPreview" :src="skin?.src" v-if="skin?.src" class="img-thumbnail" />
+      </div>
     </div>
   </div>
 </template>
