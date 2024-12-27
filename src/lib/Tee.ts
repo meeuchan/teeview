@@ -1,5 +1,11 @@
 import Canvas from './Canvas'
+import { EyeType, FaceType } from './Parts'
 import type { Skin } from './Skin'
+
+export interface ITeeOptions {
+  eyes?: EyeType
+  face?: FaceType
+}
 
 export class Tee {
   private _skin: Skin
@@ -12,14 +18,24 @@ export class Tee {
     this._scale = this._size / 64
   }
 
-  public render() {
+  public render(options?: ITeeOptions) {
     const body = this._renderBody()
     const bodyShadow = this._renderBodyShadow()
     const frontFoot = this._renderFrontFoot()
     const frontFootShadow = this._renderFrontFootShadow()
     const backFoot = this._renderBackFoot()
     const backFootShadow = this._renderBackFootShadow()
-    return Canvas.merge(bodyShadow, backFootShadow, frontFootShadow, backFoot, body, frontFoot)
+    const eyes = this._renderEyes(options?.eyes || EyeType.Normal, options?.face || FaceType.Right)
+
+    return Canvas.merge(
+      bodyShadow,
+      backFootShadow,
+      frontFootShadow,
+      backFoot,
+      body,
+      frontFoot,
+      eyes,
+    )
   }
 
   private _renderBody() {
@@ -44,6 +60,31 @@ export class Tee {
 
   private _renderBackFootShadow() {
     return this._renderPart(this._skin.getFootShadow(), 64, -6.875, 30)
+  }
+
+  private _renderEyes(eye: EyeType, face: FaceType) {
+    let leftOffsetX = 23.0625
+    let rightOffsetX = 31.375
+    const offsetY = 15.9625
+    const scale = 0.8
+
+    if (face == FaceType.Front) {
+      leftOffsetX = 15.05
+      rightOffsetX = 23.3625
+    }
+
+    const leftEye = this._skin.getEye(eye)
+    const rightEye = Canvas.flip(leftEye)
+
+    const leftEyeCanvas = this._renderPart(leftEye, 32, leftOffsetX, offsetY, scale)
+    const rightEyeCanvas = this._renderPart(rightEye, 32, rightOffsetX, offsetY, scale)
+    let canvas = Canvas.merge(leftEyeCanvas, rightEyeCanvas)!
+
+    if (face == FaceType.Left) {
+      canvas = Canvas.flip(canvas)
+    }
+
+    return canvas
   }
 
   private _renderPart(

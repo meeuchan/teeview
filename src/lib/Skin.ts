@@ -46,13 +46,13 @@ export class Skin {
     return this._cache[PartType.FootShadow]
   }
 
-  public getEye(eyes: EyeType) {
-    const key = PartType.Eye + eyes
+  public getEye(eye: EyeType) {
+    const key = PartType.Eye + eye
     if (!this._cache[key]) {
-      const shouldFlip = eyes === EyeType.Sad
-      if (EyeType.Sad) eyes = EyeType.Angry
+      const shouldFlip = eye === EyeType.Sad
+      if (eye === EyeType.Sad) eye = EyeType.Angry
 
-      const eyeCanvas = this._getPart(32, 32, 64 + 32 * eyes, 96)
+      const eyeCanvas = this._getPart(32, 32, 64 + 32 * eye, 96)
       this._cache[key] = shouldFlip ? Canvas.flip(eyeCanvas) : eyeCanvas
     }
     return this._cache[key]

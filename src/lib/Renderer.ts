@@ -1,12 +1,9 @@
-import type { EyeType, FaceType } from './Parts'
 import { Skin } from './Skin'
-import { Tee } from './Tee'
+import { Tee, type ITeeOptions } from './Tee'
 
-export interface IRendererOptions {
+export type IRendererOptions = {
   skin: HTMLImageElement
-  eyes?: EyeType
-  face?: FaceType
-}
+} & ITeeOptions
 
 export class Renderer {
   private _options: IRendererOptions | null = null
@@ -23,7 +20,7 @@ export class Renderer {
     this._options = options
 
     const tee = new Tee(this._skin)
-    return tee.render()
+    return tee.render(options)
   }
 
   private _areImagesDifferent(img1: HTMLImageElement, img2: HTMLImageElement) {
