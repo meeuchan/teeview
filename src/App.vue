@@ -18,7 +18,7 @@ const options = ref<IRendererOptions>()
         </div>
         <div class="col d-flex justify-content-end align-items-center">
           <DarkModeButton />
-          <button type="button" class="btn btn-primary btn-sm rounded-pill ms-2">
+          <button type="button" class="btn btn-primary btn-sm ms-2">
             <QuestionIcon />
           </button>
         </div>

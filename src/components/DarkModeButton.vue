@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import MoonIcon from './icons/MoonIcon.vue'
 import SunIcon from './icons/SunIcon.vue'
 
 const htmlNode = document.documentElement
@@ -26,8 +25,7 @@ setDarkMode(darkMode.value)
 </script>
 
 <template>
-  <button type="button" class="btn btn-warning btn-sm rounded-pill ms-2" @click="toggleDarkMode">
-    <MoonIcon v-if="darkMode" />
-    <SunIcon v-else />
+  <button type="button" class="btn btn-warning btn-sm ms-2" @click="toggleDarkMode">
+    <SunIcon />
   </button>
 </template>
