@@ -1,8 +1,11 @@
+import type { EyeType, FaceType } from './Parts'
 import { Skin } from './Skin'
 import { Tee } from './Tee'
 
 export interface IRendererOptions {
   skin: HTMLImageElement
+  eyes?: EyeType
+  face?: FaceType
 }
 
 export class Renderer {

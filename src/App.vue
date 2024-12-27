@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 import DarkModeButton from './components/DarkModeButton.vue'
 import QuestionIcon from './components/icons/QuestionIcon.vue'
-import TeeSettings from './components/TeeSettings.vue'
+import TeeOptions from './components/TeeOptions.vue'
 import TeeView from './components/TeeView.vue'
 import type { IRendererOptions } from './lib/Renderer'
 
@@ -32,7 +32,7 @@ const options = ref<IRendererOptions>()
 
       <div class="row">
         <div class="col">
-          <TeeSettings @change="options = $event" />
+          <TeeOptions @change="options = $event" />
         </div>
       </div>
     </div>

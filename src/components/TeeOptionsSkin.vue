@@ -17,7 +17,7 @@ function setSkin(img: HTMLImageElement) {
 
 <template>
   <div class="container-fluid g-0">
-    <div class="row g-0">
+    <div class="row">
       <div class="col">
         <p>
           Get a skin from
