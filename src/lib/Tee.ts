@@ -5,6 +5,8 @@ import type { Skin } from './Skin'
 export interface ITeeOptions {
   eyes?: EyeType
   face?: FaceType
+  noFace?: boolean
+  noFeet?: boolean
 }
 
 export class Tee {
@@ -29,12 +31,12 @@ export class Tee {
 
     return Canvas.merge(
       bodyShadow,
-      backFootShadow,
-      frontFootShadow,
-      backFoot,
+      options?.noFeet ? null : backFootShadow,
+      options?.noFeet ? null : frontFootShadow,
+      options?.noFeet ? null : backFoot,
       body,
-      frontFoot,
-      eyes,
+      options?.noFeet ? null : frontFoot,
+      options?.noFace ? null : eyes,
     )
   }
 
