@@ -12,7 +12,7 @@ const options = ref<IRendererOptions>()
 <template>
   <div class="app-container">
     <div class="container">
-      <div class="row justify-content-between">
+      <div class="row justify-content-between mb-1">
         <div class="col">
           <h1>TeeView</h1>
         </div>

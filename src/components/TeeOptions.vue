@@ -25,7 +25,8 @@ function buildOptions() {
 </script>
 
 <template>
-  <div id="teeOptions" class="card">
+  <div id="teeOptions">
+    <div class="card">
     <Tabs>
       <Tab title="Skin" class="card-body">
         <TeeOptionsSkin @change="((skin = $event), buildOptions())" />
@@ -37,6 +38,7 @@ function buildOptions() {
         <TeeOptionsPart @change="((partOptions = $event), buildOptions())" />
       </Tab>
     </Tabs>
+    </div>
   </div>
 </template>
 
