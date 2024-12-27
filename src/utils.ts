@@ -10,3 +10,9 @@ export const getImageFromFile = (file: File) =>
     reader.onerror = () => reject()
     reader.readAsDataURL(file)
   })
+
+export const getEnumNumericKeys = (enumObj: object) => {
+  return Object.keys(enumObj)
+    .filter((key) => !isNaN(Number(key)))
+    .map(Number)
+}

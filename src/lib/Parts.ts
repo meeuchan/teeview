@@ -21,3 +21,19 @@ export enum FaceType {
   Left,
   Front,
 }
+
+export const EyeTypeLabels: Record<EyeType, string> = {
+  [EyeType.Normal]: 'Normal',
+  [EyeType.Angry]: 'Angry',
+  [EyeType.Hurt]: 'Hurt',
+  [EyeType.Happy]: 'Happy',
+  [EyeType.Ninja]: 'Ninja',
+  [EyeType.Surprised]: 'Surprised',
+  [EyeType.Sad]: 'Sad',
+}
+
+export const FaceTypeLabels: { [key in FaceType]: string } = {
+  [FaceType.Right]: 'Right',
+  [FaceType.Left]: 'Left',
+  [FaceType.Front]: 'Front',
+}

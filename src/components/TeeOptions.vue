@@ -2,10 +2,12 @@
 import { ref } from 'vue'
 import Tab from './tabs/Tab.vue'
 import Tabs from './tabs/Tabs.vue'
-import TeeSettingsSkin from './TeeSettingsSkin.vue'
+import TeeOptionsSkin from './TeeOptionsSkin.vue'
 import type { IRendererOptions } from '@/lib/Renderer'
+import TeeOptionsPart, { type IPartsOptions } from './TeeOptionsPart.vue'
 
 const skin = ref<HTMLImageElement>()
+const partOptions = ref<IPartsOptions>()
 
 const emit = defineEmits<{
   change: [value: IRendererOptions]
@@ -16,6 +18,8 @@ function buildOptions() {
 
   const options: IRendererOptions = {
     skin: skin.value,
+    eyes: partOptions.value?.eyes,
+    face: partOptions.value?.face,
   }
   emit('change', options)
 }
@@ -25,12 +29,14 @@ function buildOptions() {
   <div id="teeOptions" class="card">
     <Tabs>
       <Tab title="Skin" class="card-body">
-        <TeeSettingsSkin @change="((skin = $event), buildOptions())" />
+        <TeeOptionsSkin @change="((skin = $event), buildOptions())" />
       </Tab>
       <Tab title="Color" :disabled="!skin" class="card-body">
         <div>B</div>
       </Tab>
-      <Tab title="Options" :disabled="!skin" class="card-body"></Tab>
+      <Tab title="Parts" :disabled="!skin" class="card-body">
+        <TeeOptionsPart @change="((partOptions = $event), buildOptions())" />
+      </Tab>
     </Tabs>
   </div>
 </template>
