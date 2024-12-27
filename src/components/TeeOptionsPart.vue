@@ -4,13 +4,15 @@ import type { IRendererOptions } from '@/lib/Renderer'
 import { getEnumNumericKeys } from '@/utils'
 import { ref } from 'vue'
 
-export type IPartsOptions = Pick<IRendererOptions, 'eyes' | 'face'>
+export type IPartsOptions = Pick<IRendererOptions, 'eyes' | 'face' | 'noFace' | 'noFeet'>
 
 const eyes = getEnumNumericKeys(EyeType)
 const faces = getEnumNumericKeys(FaceType)
 
 const selectedEyes = ref(eyes[0])
 const selectedFace = ref(faces[0])
+const noFace = ref(false)
+const noFeet = ref(false)
 
 const emit = defineEmits<{
   change: [value: IPartsOptions]
@@ -20,6 +22,8 @@ function buildOptions() {
   const options: IPartsOptions = {
     eyes: selectedEyes.value,
     face: selectedFace.value,
+    noFace: noFace.value,
+    noFeet: noFeet.value,
   }
 
   emit('change', options)
@@ -27,7 +31,7 @@ function buildOptions() {
 </script>
 
 <template>
-  <div class="container-fluid g-0">
+  <form class="container-fluid g-0">
     <div class="row">
       <div class="col">
         <div class="mb-3">
@@ -57,7 +61,29 @@ function buildOptions() {
           </select>
         </div>
       </div>
-      <div class="col">Extras:</div>
+      <div class="col">
+        <label class="form-label">Extras:</label>
+        <div class="form-check">
+          <input
+            id="noFaceCheckbox"
+            type="checkbox"
+            v-model="noFace"
+            @change="buildOptions()"
+            class="form-check-input"
+          />
+          <label class="form-check-label" for="noFaceCheckbox">No Face</label>
+        </div>
+        <div class="form-check">
+          <input
+            id="noFeetCheckbox"
+            type="checkbox"
+            v-model="noFeet"
+            @change="buildOptions()"
+            class="form-check-input"
+          />
+          <label class="form-check-label" for="noFeetCheckbox">No Feet</label>
+        </div>
+      </div>
     </div>
-  </div>
+  </form>
 </template>

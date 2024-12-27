@@ -18,8 +18,7 @@ function buildOptions() {
 
   const options: IRendererOptions = {
     skin: skin.value,
-    eyes: partOptions.value?.eyes,
-    face: partOptions.value?.face,
+    ...partOptions.value
   }
   emit('change', options)
 }
