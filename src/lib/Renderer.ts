@@ -13,15 +13,21 @@ export class Renderer {
   private _tee: Tee | null = null
 
   public render(options: IRendererOptions) {
+    let skinChanged = false
     if (
       !this._skin ||
       !this._options?.skin ||
       this._areImagesDifferent(this._options.skin, options.skin)
     ) {
       this._skin = new Skin(options.skin)
+      skinChanged = true
     }
 
-    if (!this._tee || this._areColorsDifferent(this._options?.colors, options.colors)) {
+    if (
+      !this._tee ||
+      skinChanged ||
+      this._areColorsDifferent(this._options?.colors, options.colors)
+    ) {
       this._tee = new Tee(this._skin, options.colors)
     }
 
