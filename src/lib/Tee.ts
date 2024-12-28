@@ -1,6 +1,12 @@
 import Canvas from './Canvas'
+import type { TeeColor } from './Color'
 import { EyeType, FaceType } from './Parts'
 import type { Skin } from './Skin'
+
+export interface ITeeColors {
+  body: TeeColor
+  feet: TeeColor
+}
 
 export interface ITeeOptions {
   eyes?: EyeType
@@ -13,11 +19,13 @@ export class Tee {
   private _skin: Skin
   private _size: number
   private _scale: number
+  private _colors: ITeeColors | undefined
 
-  constructor(skin: Skin) {
+  constructor(skin: Skin, colors?: ITeeColors) {
     this._skin = skin
     this._size = skin.height * 0.75
     this._scale = this._size / 64
+    this._colors = colors
   }
 
   public render(options?: ITeeOptions) {
