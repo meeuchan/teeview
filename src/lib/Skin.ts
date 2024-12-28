@@ -1,5 +1,5 @@
 import Canvas from './Canvas'
-import { EyeType, PartType } from './Parts'
+import { EyeType, SkinPartType } from './Parts'
 
 export class Skin {
   private _img: HTMLImageElement
@@ -19,35 +19,35 @@ export class Skin {
   }
 
   public getBody() {
-    if (!this._cache[PartType.Body]) {
-      this._cache[PartType.Body] = this._getPart(96, 96, 0, 0)
+    if (!this._cache[SkinPartType.Body]) {
+      this._cache[SkinPartType.Body] = this._getPart(96, 96, 0, 0)
     }
-    return this._cache[PartType.Body]
+    return this._cache[SkinPartType.Body]
   }
 
   public getBodyShadow() {
-    if (!this._cache[PartType.BodyShadow]) {
-      this._cache[PartType.BodyShadow] = this._getPart(96, 96, 96, 0)
+    if (!this._cache[SkinPartType.BodyShadow]) {
+      this._cache[SkinPartType.BodyShadow] = this._getPart(96, 96, 96, 0)
     }
-    return this._cache[PartType.BodyShadow]
+    return this._cache[SkinPartType.BodyShadow]
   }
 
   public getFoot() {
-    if (!this._cache[PartType.Foot]) {
-      this._cache[PartType.Foot] = this._getPart(64, 32, 192, 32)
+    if (!this._cache[SkinPartType.Foot]) {
+      this._cache[SkinPartType.Foot] = this._getPart(64, 32, 192, 32)
     }
-    return this._cache[PartType.Foot]
+    return this._cache[SkinPartType.Foot]
   }
 
   public getFootShadow() {
-    if (!this._cache[PartType.FootShadow]) {
-      this._cache[PartType.FootShadow] = this._getPart(64, 32, 192, 64)
+    if (!this._cache[SkinPartType.FootShadow]) {
+      this._cache[SkinPartType.FootShadow] = this._getPart(64, 32, 192, 64)
     }
-    return this._cache[PartType.FootShadow]
+    return this._cache[SkinPartType.FootShadow]
   }
 
   public getEye(eye: EyeType) {
-    const key = PartType.Eye + eye
+    const key = SkinPartType.Eye + eye
     if (!this._cache[key]) {
       const shouldFlip = eye === EyeType.Sad
       if (eye === EyeType.Sad) eye = EyeType.Angry

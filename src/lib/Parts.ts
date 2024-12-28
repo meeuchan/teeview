@@ -1,8 +1,18 @@
-export enum PartType {
+export enum SkinPartType {
   Body = 'body',
   BodyShadow = 'bodyShadow',
   Foot = 'foot',
   FootShadow = 'footShadow',
+  Eye = 'eye',
+}
+
+export enum TeePartType {
+  Body = 'body',
+  BodyShadow = 'bodyShadow',
+  FrontFoot = 'frontFoot',
+  FrontFootShadow = 'frontFootShadow',
+  BackFoot = 'backFoot',
+  BackFootShadow = 'backFootShadow',
   Eye = 'eye',
 }
 
