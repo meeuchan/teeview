@@ -16,3 +16,16 @@ export const getEnumNumericKeys = (enumObj: object) => {
     .filter((key) => !isNaN(Number(key)))
     .map(Number)
 }
+
+export const debounce = <T extends unknown[], S>(
+  func: (...args: T) => S,
+  timeout = 300,
+): ((...args: T) => void) => {
+  let timer: number
+  return (...args: T) => {
+    clearTimeout(timer)
+    timer = setTimeout(() => {
+      func(...args)
+    }, timeout)
+  }
+}
