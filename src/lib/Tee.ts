@@ -54,7 +54,7 @@ export class Tee {
       let body = this._renderPart(this._skin.getBody(), 96, 0, 0, 2 / 3)
       if (this._colors?.body) {
         const color = RgbColor.fromTeeColor(this._colors.body)
-        body = Canvas.tint(body, color)
+        body = Canvas.tint(body, color, true)
       }
       this._cache[TeePartType.Body] = body
     }
