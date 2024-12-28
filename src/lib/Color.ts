@@ -23,6 +23,10 @@ export class TeeColor {
   public toString() {
     return `tee(${this.h}, ${this.s}, ${this.l})`
   }
+
+  public static compare(color1: TeeColor, color2: TeeColor) {
+    return color1.h === color2.h && color1.s === color2.s && color1.l === color2.l
+  }
 }
 
 export class HslColor {
