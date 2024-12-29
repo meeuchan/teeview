@@ -44,11 +44,11 @@ function buildOptions() {
       </div>
     </div>
     <div class="row">
-      <div class="col">
+      <div class="col-sm mb-2 mb-md-0">
         <label class="form-label">Body:</label>
         <InputTeeColor @input="((bodyColor = $event), buildOptions())" />
       </div>
-      <div class="col">
+      <div class="col-sm">
         <label class="form-label">Feet:</label>
         <InputTeeColor @input="((feetColor = $event), buildOptions())" />
       </div>

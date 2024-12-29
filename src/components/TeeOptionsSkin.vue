@@ -18,7 +18,7 @@ function setSkin(img: HTMLImageElement) {
 <template>
   <div class="container-fluid g-0">
     <div class="row">
-      <div class="col">
+      <div class="col-sm mb-3 mb-md-0">
         <p>
           Get a skin from
           <LinkTo href="https://ddnet.org/skins">ddnet.org</LinkTo> or
@@ -26,7 +26,7 @@ function setSkin(img: HTMLImageElement) {
         </p>
         <InputSkinFile @input="setSkin($event)" />
       </div>
-      <div class="col text-end">
+      <div class="col-sm text-center text-md-end">
         <img id="skinPreview" :src="skin?.src" v-if="skin?.src" class="img-thumbnail" />
       </div>
     </div>
