@@ -31,13 +31,28 @@ export default {
   flip(canvas: HTMLCanvasElement) {
     const { canvas: flippedCanvas, ctx } = this.create(canvas.width)
 
-    ctx.save()
     ctx.translate(canvas.width, 0)
     ctx.scale(-1, 1)
     ctx.drawImage(canvas, 0, 0)
-    ctx.restore()
 
     return flippedCanvas
+  },
+
+  scale(canvas: HTMLCanvasElement, scaleX: number, scaleY: number) {
+    const { canvas: scaledCanvas, ctx } = this.create(canvas.width, canvas.height)
+
+    ctx.scale(scaleX, scaleY)
+    ctx.drawImage(canvas, 0, canvas.height * (scaleY + 0.4625))
+
+    console.log(
+      canvas.width,
+      canvas.height,
+      scaledCanvas.width,
+      scaledCanvas.height,
+      canvas.height * 0.5 + canvas.height * scaleY,
+    )
+
+    return scaledCanvas
   },
 
   tint(canvas: HTMLCanvasElement, rgbColor: RgbColor, weightedGrayscale = false) {
