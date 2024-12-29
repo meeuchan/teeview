@@ -58,7 +58,7 @@ export class Skin {
         eyeCanvas = Canvas.flip(eyeCanvas)
       }
       if (eye === EyeType.Blink) {
-        eyeCanvas = Canvas.scale(eyeCanvas, 1, 0.375)
+        eyeCanvas = Canvas.scaleY(eyeCanvas, 0.375, 0.4625)
       }
       this._cache[key] = eyeCanvas
     }

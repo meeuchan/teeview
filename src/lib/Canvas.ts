@@ -38,19 +38,11 @@ export default {
     return flippedCanvas
   },
 
-  scale(canvas: HTMLCanvasElement, scaleX: number, scaleY: number) {
+  scaleY(canvas: HTMLCanvasElement, scaleY: number, offsetY = 0) {
     const { canvas: scaledCanvas, ctx } = this.create(canvas.width, canvas.height)
 
-    ctx.scale(scaleX, scaleY)
-    ctx.drawImage(canvas, 0, canvas.height * (scaleY + 0.4625))
-
-    console.log(
-      canvas.width,
-      canvas.height,
-      scaledCanvas.width,
-      scaledCanvas.height,
-      canvas.height * 0.5 + canvas.height * scaleY,
-    )
+    ctx.scale(1, scaleY)
+    ctx.drawImage(canvas, 0, canvas.height * (scaleY + offsetY))
 
     return scaledCanvas
   },
