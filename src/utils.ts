@@ -16,6 +16,7 @@ export const getImageFromUrl = (url: string) =>
     const img = new Image()
     img.onload = () => resolve(img)
     img.onerror = () => reject()
+    img.crossOrigin = 'Anonymous'
     img.src = url
   })
 
