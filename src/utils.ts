@@ -11,6 +11,14 @@ export const getImageFromFile = (file: File) =>
     reader.readAsDataURL(file)
   })
 
+export const getImageFromUrl = (url: string) =>
+  new Promise<HTMLImageElement>((resolve, reject) => {
+    const img = new Image()
+    img.onload = () => resolve(img)
+    img.onerror = () => reject()
+    img.src = url
+  })
+
 export const getEnumNumericKeys = (enumObj: object) => {
   return Object.keys(enumObj)
     .filter((key) => !isNaN(Number(key)))
