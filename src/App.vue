@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import DarkModeButton from './components/DarkModeButton.vue'
-import QuestionIcon from './components/icons/QuestionIcon.vue'
+import InfoButton from './components/InfoButton.vue'
 import TeeOptions from './components/TeeOptions.vue'
 import TeeView from './components/TeeView.vue'
 import type { IRendererOptions } from './lib/Renderer'
@@ -19,9 +19,7 @@ const result = ref<HTMLCanvasElement>()
         </div>
         <div class="col d-flex justify-content-end align-items-center">
           <DarkModeButton />
-          <button type="button" class="btn btn-primary btn-sm ms-2">
-            <QuestionIcon />
-          </button>
+          <InfoButton />
         </div>
       </div>
 
