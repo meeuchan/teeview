@@ -27,8 +27,7 @@ function switchMode() {
       <div class="col-sm mb-3 mb-md-0">
         <p>
           Get a skin from
-          <LinkTo href="https://ddnet.org/skins">ddnet.org</LinkTo> or
-          <LinkTo href="https://teedata.net/skins">teedata.net</LinkTo>.
+          <LinkTo href="https://ddnet.org/skins">ddnet.org</LinkTo>.
         </p>
         <div class="mb-2">
           <InputSkinFile v-if="!useUrl" @input="setSkin($event)" />
