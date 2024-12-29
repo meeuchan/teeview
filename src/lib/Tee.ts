@@ -30,22 +30,16 @@ export class Tee {
   }
 
   public render(options?: ITeeOptions) {
-    const body = this._renderBody()
-    const bodyShadow = this._renderBodyShadow()
-    const frontFoot = this._renderFrontFoot()
-    const frontFootShadow = this._renderFrontFootShadow()
-    const backFoot = this._renderBackFoot()
-    const backFootShadow = this._renderBackFootShadow()
-    const eyes = this._renderEyes(options?.eyes || EyeType.Normal, options?.face || FaceType.Right)
-
     return Canvas.merge(
-      bodyShadow,
-      options?.noFeet ? null : backFootShadow,
-      options?.noFeet ? null : frontFootShadow,
-      options?.noFeet ? null : backFoot,
-      body,
-      options?.noFeet ? null : frontFoot,
-      options?.noFace ? null : eyes,
+      this._renderBodyShadow(),
+      options?.noFeet ? null : this._renderBackFootShadow(),
+      options?.noFeet ? null : this._renderFrontFootShadow(),
+      options?.noFeet ? null : this._renderBackFoot(),
+      this._renderBody(),
+      options?.noFeet ? null : this._renderFrontFoot(),
+      options?.noFace
+        ? null
+        : this._renderEyes(options?.eyes || EyeType.Normal, options?.face || FaceType.Right),
     )
   }
 
