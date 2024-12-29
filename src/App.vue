@@ -39,5 +39,3 @@ const result = ref<HTMLCanvasElement>()
     </div>
   </div>
 </template>
-
-<style scoped></style>
