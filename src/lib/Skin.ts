@@ -49,11 +49,18 @@ export class Skin {
   public getEye(eye: EyeType) {
     const key = SkinPartType.Eye + eye
     if (!this._cache[key]) {
-      const shouldFlip = eye === EyeType.Sad
-      if (eye === EyeType.Sad) eye = EyeType.Angry
+      let skinEye = eye
+      if (eye === EyeType.Sad) skinEye = EyeType.Angry
+      if (eye === EyeType.Blink) skinEye = EyeType.Normal
 
-      const eyeCanvas = this._getPart(32, 32, 64 + 32 * eye, 96)
-      this._cache[key] = shouldFlip ? Canvas.flip(eyeCanvas) : eyeCanvas
+      let eyeCanvas = this._getPart(32, 32, 64 + 32 * skinEye, 96)
+      if (eye === EyeType.Sad) {
+        eyeCanvas = Canvas.flip(eyeCanvas)
+      }
+      if (eye === EyeType.Blink) {
+        eyeCanvas = Canvas.scale(eyeCanvas, 1, 0.375)
+      }
+      this._cache[key] = eyeCanvas
     }
     return this._cache[key]
   }

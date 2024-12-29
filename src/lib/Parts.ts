@@ -19,10 +19,11 @@ export enum TeePartType {
 export enum EyeType {
   Normal,
   Angry,
-  Hurt,
+  Pain,
   Happy,
   Ninja,
   Surprised,
+  Blink,
   Sad,
 }
 
@@ -35,11 +36,12 @@ export enum FaceType {
 export const EyeTypeLabels: Record<EyeType, string> = {
   [EyeType.Normal]: 'Normal',
   [EyeType.Angry]: 'Angry',
-  [EyeType.Hurt]: 'Hurt',
+  [EyeType.Pain]: 'Pain',
   [EyeType.Happy]: 'Happy',
   [EyeType.Ninja]: 'Ninja',
   [EyeType.Surprised]: 'Surprised',
   [EyeType.Sad]: 'Sad',
+  [EyeType.Blink]: 'Blink',
 }
 
 export const FaceTypeLabels: { [key in FaceType]: string } = {
