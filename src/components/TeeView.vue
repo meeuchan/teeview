@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref, useTemplateRef, watch } from 'vue'
 import { Renderer, type IRendererOptions } from '@/lib/Renderer'
+import Canvas from '@/lib/Canvas'
 
 const props = defineProps<{
   options?: IRendererOptions
@@ -8,6 +9,10 @@ const props = defineProps<{
 
 const renderer = ref(new Renderer())
 const canvas = useTemplateRef('teePreview')
+
+const emit = defineEmits<{
+  change: [value: HTMLCanvasElement]
+}>()
 
 onMounted(() => {
   if (props.options) renderTee(props.options)
@@ -30,6 +35,8 @@ function renderTee(options: IRendererOptions) {
   canvas.value.width = render.width
   canvas.value.height = render.height
   ctx.drawImage(render, 0, 0)
+
+  emit('change', Canvas.clone(canvas.value))
 }
 </script>
 

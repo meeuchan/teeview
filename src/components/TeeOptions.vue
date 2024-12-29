@@ -7,6 +7,11 @@ import type { IRendererOptions } from '@/lib/Renderer'
 import TeeOptionsPart, { type IPartsOptions } from './TeeOptionsPart.vue'
 import TeeOptionsColor from './TeeOptionsColor.vue'
 import type { ITeeColors } from '@/lib/Tee'
+import TeeOptionsDownload from './TeeOptionsDownload.vue'
+
+const props = defineProps<{
+  result?: HTMLCanvasElement
+}>()
 
 const skin = ref<HTMLImageElement>()
 const colorOptions = ref<ITeeColors>()
@@ -40,6 +45,9 @@ function buildOptions() {
         </Tab>
         <Tab title="Parts" :disabled="!skin" class="card-body">
           <TeeOptionsPart @change="((partOptions = $event), buildOptions())" />
+        </Tab>
+        <Tab title="Download" :disabled="!skin" class="card-body">
+          <TeeOptionsDownload :result="props.result" />
         </Tab>
       </Tabs>
     </div>

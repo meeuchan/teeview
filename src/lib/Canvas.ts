@@ -11,6 +11,14 @@ export default {
     return { canvas, ctx }
   },
 
+  clone(canvas: HTMLCanvasElement) {
+    const { canvas: clonedCanvas, ctx } = this.create(canvas.width, canvas.height)
+
+    ctx.drawImage(canvas, 0, 0)
+
+    return clonedCanvas
+  },
+
   merge(...canvases: (HTMLCanvasElement | null)[]) {
     let mergedCanvas: HTMLCanvasElement | null = null
     let ctx: CanvasRenderingContext2D | null = null
@@ -26,6 +34,16 @@ export default {
     }
 
     return mergedCanvas
+  },
+
+  resizeSmooth(canvas: HTMLCanvasElement, width: number, height?: number) {
+    const { canvas: resizedCanvas, ctx } = this.create(width)
+
+    ctx.imageSmoothingEnabled = true
+    ctx.imageSmoothingQuality = 'high'
+    ctx.drawImage(canvas, 0, 0, width, height || width)
+
+    return resizedCanvas
   },
 
   flip(canvas: HTMLCanvasElement) {

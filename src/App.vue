@@ -7,6 +7,7 @@ import TeeView from './components/TeeView.vue'
 import type { IRendererOptions } from './lib/Renderer'
 
 const options = ref<IRendererOptions>()
+const result = ref<HTMLCanvasElement>()
 </script>
 
 <template>
@@ -26,13 +27,13 @@ const options = ref<IRendererOptions>()
 
       <div class="row mb-2">
         <div class="col">
-          <TeeView :options="options" />
+          <TeeView :options="options" @change="result = $event" />
         </div>
       </div>
 
       <div class="row">
         <div class="col">
-          <TeeOptions @change="options = $event" />
+          <TeeOptions :result="result" @change="options = $event" />
         </div>
       </div>
     </div>
