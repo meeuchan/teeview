@@ -2,8 +2,10 @@
 import { ref } from 'vue'
 import InputSkinFile from './inputs/InputSkinFile.vue'
 import LinkTo from './LinkTo.vue'
+import InputSkinUrl from './inputs/InputSkinUrl.vue'
 
 const skin = ref<HTMLImageElement>()
+const useUrl = ref(false)
 
 const emit = defineEmits<{
   change: [value: HTMLImageElement]
@@ -12,6 +14,10 @@ const emit = defineEmits<{
 function setSkin(img: HTMLImageElement) {
   skin.value = img
   emit('change', img)
+}
+
+function switchMode() {
+  useUrl.value = !useUrl.value
 }
 </script>
 
@@ -24,7 +30,13 @@ function setSkin(img: HTMLImageElement) {
           <LinkTo href="https://ddnet.org/skins">ddnet.org</LinkTo> or
           <LinkTo href="https://teedata.net/skins">teedata.net</LinkTo>.
         </p>
-        <InputSkinFile @input="setSkin($event)" />
+        <div class="mb-2">
+          <InputSkinFile v-if="!useUrl" @input="setSkin($event)" />
+          <InputSkinUrl v-if="useUrl" @input="setSkin($event)" />
+        </div>
+        <button @click="switchMode()" class="btn btn-primary btn-sm">
+          Switch to {{ useUrl ? 'File' : 'URL/Name' }}
+        </button>
       </div>
       <div class="col-sm text-center text-md-end">
         <img id="skinPreview" :src="skin?.src" v-if="skin?.src" class="img-thumbnail" />
