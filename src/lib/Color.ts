@@ -98,7 +98,7 @@ export class RgbColor {
         break
       case 1:
         tempR = x
-        tempB = c
+        tempG = c
         break
       case 2:
         tempG = c
