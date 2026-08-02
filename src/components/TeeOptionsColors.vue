@@ -44,7 +44,7 @@ function buildOptions() {
 </script>
 
 <template>
-  <form class="container-fluid g-0">
+  <form class="container-fluid g-0" @submit.prevent>
     <div class="row mb-2">
       <div class="col">
         <div class="form-check">

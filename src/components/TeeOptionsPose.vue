@@ -31,7 +31,7 @@ function buildOptions() {
 </script>
 
 <template>
-  <form class="container-fluid g-0">
+  <form class="container-fluid g-0" @submit.prevent>
     <div class="row">
       <div class="col">
         <div class="form-check mb-3">
