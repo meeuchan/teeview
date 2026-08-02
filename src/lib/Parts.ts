@@ -27,12 +27,6 @@ export enum EyeType {
   Sad,
 }
 
-export enum FaceType {
-  Right,
-  Left,
-  Front,
-}
-
 export const EyeTypeLabels: Record<EyeType, string> = {
   [EyeType.Normal]: 'Normal',
   [EyeType.Angry]: 'Angry',
@@ -42,10 +36,4 @@ export const EyeTypeLabels: Record<EyeType, string> = {
   [EyeType.Surprised]: 'Surprised',
   [EyeType.Sad]: 'Sad',
   [EyeType.Blink]: 'Blink',
-}
-
-export const FaceTypeLabels: { [key in FaceType]: string } = {
-  [FaceType.Right]: 'Right',
-  [FaceType.Left]: 'Left',
-  [FaceType.Front]: 'Front',
 }

@@ -1,6 +1,6 @@
 import Canvas from './Canvas'
 import { RgbColor, type TeeColor } from './Color'
-import { EyeType, FaceType, TeePartType } from './Parts'
+import { EyeType, TeePartType } from './Parts'
 import type { Skin } from './Skin'
 
 export interface ITeeColors {
@@ -16,7 +16,7 @@ export interface IColorPreset {
 
 export interface ITeeOptions {
   eyes?: EyeType
-  face?: FaceType
+  eyeAngle?: number | null
   noFace?: boolean
   noFeet?: boolean
 }
@@ -44,7 +44,10 @@ export class Tee {
       this._renderBody(),
       options?.noFace
         ? null
-        : this._renderEyes(options?.eyes || EyeType.Normal, options?.face || FaceType.Right),
+        : this._renderEyes(
+            options?.eyes ?? EyeType.Normal,
+            options?.eyeAngle === undefined ? 0 : options.eyeAngle,
+          ),
       options?.noFeet ? null : this._renderFrontFoot(),
     )
   }
@@ -121,17 +124,27 @@ export class Tee {
     return this._cache[TeePartType.BackFootShadow]
   }
 
-  private _renderEyes(eye: EyeType, face: FaceType) {
-    const key = TeePartType.Eye + eye + face
+  private _renderEyes(eye: EyeType, angle: number | null) {
+    const key = TeePartType.Eye + eye + (angle ?? 'front')
     if (!this._cache[key]) {
-      let leftOffsetX = 23.04
-      let rightOffsetX = 31.36
-      const offsetY = 16
       const scale = 0.8
+      let leftOffsetX: number
+      let rightOffsetX: number
+      let offsetY: number
 
-      if (face == FaceType.Front) {
+      if (angle === null) {
         leftOffsetX = 15.04
         rightOffsetX = 23.36
+        offsetY = 16
+      } else {
+        const rad = (angle * Math.PI) / 180
+        const dirX = Math.cos(rad)
+        const dirY = Math.sin(rad)
+        const separation = (0.075 - 0.01 * Math.abs(dirX)) * 64
+        const offsetX = dirX * 0.125 * 64
+        leftOffsetX = 19.2 - separation + offsetX
+        rightOffsetX = 19.2 + separation + offsetX
+        offsetY = 19.2 + (-0.05 + dirY * 0.1) * 64
       }
 
       const leftEye = this._skin.getEye(eye)
@@ -140,10 +153,6 @@ export class Tee {
       const leftEyeCanvas = this._renderPart(leftEye, 32, leftOffsetX, offsetY, scale)
       const rightEyeCanvas = this._renderPart(rightEye, 32, rightOffsetX, offsetY, scale)
       let canvas = Canvas.merge(leftEyeCanvas, rightEyeCanvas)!
-
-      if (face == FaceType.Left) {
-        canvas = Canvas.flip(canvas)
-      }
 
       if (this._colors?.body) {
         const color = RgbColor.fromTeeColor(this._colors.body)
