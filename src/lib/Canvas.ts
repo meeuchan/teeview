@@ -74,7 +74,8 @@ export default {
     const pixels = imgData.data
 
     for (let i = 0; i < pixels.length; i += 4) {
-      const gray = (pixels[i] + pixels[i + 1] + pixels[i + 2]) / 3
+      // based on engine/gfx/image_manipulation.cpp
+      const gray = 0.2126 * pixels[i] + 0.7152 * pixels[i + 1] + 0.0722 * pixels[i + 2]
       pixels[i] = gray
       pixels[i + 1] = gray
       pixels[i + 2] = gray
