@@ -1,3 +1,5 @@
+const DARKEST_LGT = 0.5 // see ddnet color.h
+
 export class TeeColor {
   private _h: number
   public get h() {
@@ -14,10 +16,28 @@ export class TeeColor {
     return this._l
   }
 
-  constructor(h = 0, s = 0, l = 0) {
+  private _code: number
+  public get code() {
+    return this._code
+  }
+
+  private constructor(h = 0, s = 0, l = 0, code = 0) {
     this._h = h
     this._s = s
     this._l = l
+    this._code = code
+  }
+
+  public static fromValues(h = 0, s = 0, l = 0) {
+    const code = (h << 16) | (s << 8) | l
+    return new TeeColor(h, s, l, code)
+  }
+
+  public static fromCode(code = 0) {
+    const h = (code >> 16) & 0xff
+    const s = (code >> 8) & 0xff
+    const l = code & 0xff
+    return new TeeColor(h, s, l, code)
   }
 
   public toString() {
@@ -52,7 +72,11 @@ export class HslColor {
   }
 
   public static fromTeeColor(teeColor: TeeColor) {
-    return new HslColor(teeColor.h / 255, teeColor.s / 255, 0.5 + (0.5 * teeColor.l) / 255)
+    return new HslColor(
+      teeColor.h / 255,
+      teeColor.s / 255,
+      DARKEST_LGT + (1 - DARKEST_LGT) * (teeColor.l / 255),
+    )
   }
 
   public toString() {

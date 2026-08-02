@@ -2,32 +2,46 @@
 import { RgbColor, TeeColor } from '@/lib/Color'
 import { onMounted, ref, useTemplateRef, watch } from 'vue'
 
-const h = ref(127)
-const s = ref(127)
-const l = ref(127)
+const defaultCode = 0x7F7F7F;
+const maxCode = 0xFFFFFF
+const defaultColor = 127
+const maxColor = 255
+
+const code = ref(defaultCode)
+const h = ref(defaultColor)
+const s = ref(defaultColor)
+const l = ref(defaultColor)
 const colorPreview = useTemplateRef('colorPreview')
 
 const emit = defineEmits<{
   input: [value: TeeColor]
 }>()
 
+watch(code, (value) => {
+  code.value = clampCodeValue(value)
+  updateColorFromCode()
+})
+
 watch(h, (value) => {
   h.value = clampColorValue(value)
-  updateColor()
+  updateColorFromValues()
 })
 
 watch(s, (value) => {
   s.value = clampColorValue(value)
-  updateColor()
+  updateColorFromValues()
 })
 
 watch(l, (value) => {
   l.value = clampColorValue(value)
-  updateColor()
+  updateColorFromValues()
 })
 
-function updateColor() {
-  const teeColor = new TeeColor(h.value, s.value, l.value)
+function updateColorFromCode() {
+  const teeColor = TeeColor.fromCode(code.value)
+  h.value = teeColor.h
+  s.value = teeColor.s
+  l.value = teeColor.l
   const rgbColor = RgbColor.fromTeeColor(teeColor)
 
   if (colorPreview.value) {
@@ -37,13 +51,31 @@ function updateColor() {
   emit('input', teeColor)
 }
 
-function clampColorValue(value: number) {
+function updateColorFromValues() {
+  const teeColor = TeeColor.fromValues(h.value, s.value, l.value)
+  code.value = teeColor.code
+  const rgbColor = RgbColor.fromTeeColor(teeColor)
+
+  if (colorPreview.value) {
+    colorPreview.value.style.backgroundColor = rgbColor.toString()
+  }
+
+  emit('input', teeColor)
+}
+
+function clampCodeValue(value: number) {
   if (value < 0) value = 0
-  if (value > 255) value = 255
+  if (value > maxCode) value = maxCode
   return value
 }
 
-onMounted(updateColor)
+function clampColorValue(value: number) {
+  if (value < 0) value = 0
+  if (value > maxColor) value = maxColor
+  return value
+}
+
+onMounted(updateColorFromValues)
 </script>
 
 <template>
@@ -53,24 +85,31 @@ onMounted(updateColor)
     </div>
 
     <div class="col-8">
+    <div class="row mb-2">
+        <div class="input-group">
+          <span class="input-group-text">Code:</span>
+          <input type="number" min="0" :max="maxCode" v-model="code" class="form-control" />
+        </div>
+      </div>
+
       <div class="row mb-2">
         <div class="input-group">
           <span class="input-group-text">Hue:</span>
-          <input type="number" min="0" max="255" v-model="h" class="form-control" />
+          <input type="number" min="0" :max="maxColor" v-model="h" class="form-control" />
         </div>
       </div>
 
       <div class="row mb-2">
         <div class="input-group">
           <span class="input-group-text">Sat:</span>
-          <input type="number" min="0" max="255" v-model="s" class="form-control" />
+          <input type="number" min="0" :max="maxColor" v-model="s" class="form-control" />
         </div>
       </div>
 
       <div class="row mb-2">
         <div class="input-group">
           <span class="input-group-text">Lht:</span>
-          <input type="number" min="0" max="255" v-model="l" class="form-control" />
+          <input type="number" min="0" :max="maxColor" v-model="l" class="form-control" />
         </div>
       </div>
     </div>
