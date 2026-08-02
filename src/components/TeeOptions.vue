@@ -4,7 +4,8 @@ import Tab from './tabs/Tab.vue'
 import Tabs from './tabs/Tabs.vue'
 import TeeOptionsSkin from './TeeOptionsSkin.vue'
 import type { IRendererOptions } from '@/lib/Renderer'
-import TeeOptionsPart, { type IPartsOptions } from './TeeOptionsPart.vue'
+import TeeOptionsEyes, { type IEyesOptions } from './TeeOptionsEyes.vue'
+import TeeOptionsPose, { type IPoseOptions } from './TeeOptionsPose.vue'
 import TeeOptionsColors from './TeeOptionsColors.vue'
 import type { IColorPreset, ITeeColors } from '@/lib/Tee'
 import TeeOptionsDownload from './TeeOptionsDownload.vue'
@@ -16,7 +17,8 @@ const props = defineProps<{
 const skin = ref<HTMLImageElement>()
 const colorOptions = ref<ITeeColors>()
 const colorPreset = ref<IColorPreset>()
-const partOptions = ref<IPartsOptions>()
+const eyesOptions = ref<IEyesOptions>()
+const poseOptions = ref<IPoseOptions>()
 
 const emit = defineEmits<{
   change: [value: IRendererOptions]
@@ -28,7 +30,8 @@ function buildOptions() {
   const options: IRendererOptions = {
     skin: skin.value,
     colors: colorOptions.value,
-    ...partOptions.value,
+    ...eyesOptions.value,
+    ...poseOptions.value,
   }
   emit('change', options)
 }
@@ -44,8 +47,11 @@ function buildOptions() {
         <Tab title="Colors" :disabled="!skin" class="card-body">
           <TeeOptionsColors :preset="colorPreset" @change="((colorOptions = $event), buildOptions())" />
         </Tab>
-        <Tab title="Parts" :disabled="!skin" class="card-body">
-          <TeeOptionsPart @change="((partOptions = $event), buildOptions())" />
+        <Tab title="Eyes" :disabled="!skin" class="card-body">
+          <TeeOptionsEyes @change="((eyesOptions = $event), buildOptions())" />
+        </Tab>
+        <Tab title="Pose" :disabled="!skin" class="card-body">
+          <TeeOptionsPose @change="((poseOptions = $event), buildOptions())" />
         </Tab>
         <Tab title="Download" :disabled="!skin" class="card-body">
           <TeeOptionsDownload :result="props.result" />
