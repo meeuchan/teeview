@@ -37,15 +37,15 @@ export class Tee {
 
   public render(options?: ITeeOptions) {
     return Canvas.merge(
-      this._renderBodyShadow(),
       options?.noFeet ? null : this._renderBackFootShadow(),
+      this._renderBodyShadow(),
       options?.noFeet ? null : this._renderFrontFootShadow(),
       options?.noFeet ? null : this._renderBackFoot(),
       this._renderBody(),
-      options?.noFeet ? null : this._renderFrontFoot(),
       options?.noFace
         ? null
         : this._renderEyes(options?.eyes || EyeType.Normal, options?.face || FaceType.Right),
+      options?.noFeet ? null : this._renderFrontFoot(),
     )
   }
 
@@ -75,7 +75,7 @@ export class Tee {
 
   private _renderFrontFoot() {
     if (!this._cache[TeePartType.FrontFoot]) {
-      let frontFoot = this._renderPart(this._skin.getFoot(), 64, 6.875, 30)
+      let frontFoot = this._renderPart(this._skin.getFoot(), 64, 7, 30)
       if (this._colors?.feet) {
         const color = RgbColor.fromTeeColor(this._colors.feet)
         frontFoot = Canvas.tint(frontFoot, color)
@@ -87,7 +87,7 @@ export class Tee {
 
   private _renderFrontFootShadow() {
     if (!this._cache[TeePartType.FrontFootShadow]) {
-      let frontFootShadow = this._renderPart(this._skin.getFootShadow(), 64, 6.875, 30)
+      let frontFootShadow = this._renderPart(this._skin.getFootShadow(), 64, 7, 30)
       if (this._colors?.feet) {
         const color = RgbColor.fromTeeColor(this._colors.feet)
         frontFootShadow = Canvas.tint(frontFootShadow, color)
@@ -99,7 +99,7 @@ export class Tee {
 
   private _renderBackFoot() {
     if (!this._cache[TeePartType.BackFoot]) {
-      let backFoot = this._renderPart(this._skin.getFoot(), 64, -6.875, 30)
+      let backFoot = this._renderPart(this._skin.getFoot(), 64, -7, 30)
       if (this._colors?.feet) {
         const color = RgbColor.fromTeeColor(this._colors.feet)
         backFoot = Canvas.tint(backFoot, color)
@@ -111,7 +111,7 @@ export class Tee {
 
   private _renderBackFootShadow() {
     if (!this._cache[TeePartType.BackFootShadow]) {
-      let backFootShadow = this._renderPart(this._skin.getFootShadow(), 64, -6.875, 30)
+      let backFootShadow = this._renderPart(this._skin.getFootShadow(), 64, -7, 30)
       if (this._colors?.feet) {
         const color = RgbColor.fromTeeColor(this._colors.feet)
         backFootShadow = Canvas.tint(backFootShadow, color)
