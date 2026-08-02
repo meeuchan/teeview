@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, useTemplateRef } from 'vue'
-import { getImageFromFile } from '@/utils'
+import { getImageFromFile, getRasterizedSvgImage } from '@/utils'
 
 const input = useTemplateRef('fileInput')
 const hasInputChanged = ref(false)
@@ -19,12 +19,14 @@ async function setSkin() {
     setError('Please select a file.')
     return
   }
-  if (!file.name.endsWith('.png')) {
-    setError('Must be a .png file.')
+  if (!file.name.endsWith('.png') && !file.name.endsWith('.svg')) {
+    setError('Must be a .png or .svg file.')
     return
   }
 
-  const img = await getImageFromFile(file)
+  const img = file.name.endsWith('.svg')
+    ? await getRasterizedSvgImage(file)
+    : await getImageFromFile(file)
   img.setAttribute('name', file.name)
   img.setAttribute('lastModified', file.lastModified.toString())
 
@@ -53,7 +55,14 @@ function clearError() {
     class="needs-validation position-relative"
     :class="[hasInputChanged && 'was-validated']"
   >
-    <input ref="fileInput" type="file" @change="setSkin()" class="form-control" required />
+    <input
+      ref="fileInput"
+      type="file"
+      accept=".png,.svg,image/png,image/svg+xml"
+      @change="setSkin()"
+      class="form-control"
+      required
+    />
     <div class="invalid-tooltip">{{ inputError }}</div>
   </form>
 </template>

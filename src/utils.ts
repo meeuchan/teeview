@@ -1,24 +1,47 @@
-export const getImageFromFile = (file: File) =>
-  new Promise<HTMLImageElement>((resolve, reject) => {
-    const reader = new FileReader()
-    reader.onload = () => {
-      const img = new Image()
-      img.onload = () => resolve(img)
-      img.onerror = () => reject()
-      img.src = reader.result as string
-    }
-    reader.onerror = () => reject()
-    reader.readAsDataURL(file)
-  })
+const SVG_RASTER_WIDTH = 1024
 
-export const getImageFromUrl = (url: string) =>
+const loadImage = (src: string, crossOrigin?: string) =>
   new Promise<HTMLImageElement>((resolve, reject) => {
     const img = new Image()
     img.onload = () => resolve(img)
     img.onerror = () => reject()
-    img.crossOrigin = 'Anonymous'
-    img.src = url
+    if (crossOrigin) img.crossOrigin = crossOrigin
+    img.src = src
   })
+
+const readFileAsDataUrl = (file: File) =>
+  new Promise<string>((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onload = () => resolve(reader.result as string)
+    reader.onerror = () => reject()
+    reader.readAsDataURL(file)
+  })
+
+const rasterizeSvg = async (svgImg: HTMLImageElement, width: number, height: number) => {
+  const canvas = document.createElement('canvas')
+  canvas.width = width
+  canvas.height = height
+
+  const ctx = canvas.getContext('2d')
+  if (!ctx) throw new Error('Could not create a canvas context.')
+
+  ctx.drawImage(svgImg, 0, 0, width, height)
+
+  return loadImage(canvas.toDataURL('image/png'))
+}
+
+export const getImageFromFile = async (file: File) => loadImage(await readFileAsDataUrl(file))
+
+export const getRasterizedSvgImage = async (source: File | string, width = SVG_RASTER_WIDTH) => {
+  const svgImg =
+    typeof source === 'string'
+      ? await loadImage(source, 'Anonymous')
+      : await loadImage(await readFileAsDataUrl(source))
+
+  return rasterizeSvg(svgImg, width, width / 2)
+}
+
+export const getImageFromUrl = (url: string) => loadImage(url, 'Anonymous')
 
 export const getSkinImageByNameOrUrl = async (nameOrUrl: string) => {
   let url = nameOrUrl
@@ -26,7 +49,7 @@ export const getSkinImageByNameOrUrl = async (nameOrUrl: string) => {
     url = 'https://ddnet.org/skins/skin/' + url + '.png'
   }
 
-  const img = await getImageFromUrl(url)
+  const img = url.endsWith('.svg') ? await getRasterizedSvgImage(url) : await getImageFromUrl(url)
   img.setAttribute('name', url)
   img.setAttribute('lastModified', 'x')
 
