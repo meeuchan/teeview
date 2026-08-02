@@ -28,11 +28,12 @@ export class GameSkin {
     this._cellSize = img.width / 32
   }
 
-  public getWeapon(weapon: WeaponType) {
+  public getWeapon(weapon: WeaponType, flipped = false) {
     const spec = WEAPON_SPECS[weapon]
     if (!spec) return null
 
-    if (!this._cache[weapon]) {
+    const key = flipped ? `${weapon}_flipped` : `${weapon}`
+    if (!this._cache[key]) {
       const { canvas, ctx } = Canvas.create(
         spec.cellsW * this._cellSize,
         spec.cellsH * this._cellSize,
@@ -50,10 +51,10 @@ export class GameSkin {
         canvas.height,
       )
 
-      this._cache[weapon] = canvas
+      this._cache[key] = flipped ? Canvas.flipY(canvas) : canvas
     }
 
-    return this._cache[weapon]
+    return this._cache[key]
   }
 
   public getWeaponRenderSize(weapon: WeaponType) {

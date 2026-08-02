@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { EyeType, EyeTypeLabels } from '@/lib/Parts'
 import type { IRendererOptions } from '@/lib/Renderer'
-import { getEnumNumericKeys } from '@/utils'
+import { debounce, getEnumNumericKeys } from '@/utils'
 import { ref } from 'vue'
 import InputEyeAngle from './inputs/InputEyeAngle.vue'
 
@@ -17,6 +17,8 @@ const emit = defineEmits<{
   change: [value: IEyesOptions]
 }>()
 
+const debouncedChangeEmit = debounce((value: IEyesOptions) => emit('change', value))
+
 function buildOptions() {
   const options: IEyesOptions = {
     eyes: selectedEyes.value,
@@ -24,7 +26,7 @@ function buildOptions() {
     noFace: noFace.value,
   }
 
-  emit('change', options)
+  debouncedChangeEmit(options)
 }
 </script>
 

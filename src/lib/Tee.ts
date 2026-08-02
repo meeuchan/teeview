@@ -166,11 +166,9 @@ export class Tee {
   }
 
   private _renderWeapon(weapon: WeaponType, gameSkin: GameSkin, attachment: IWeaponAttachment) {
-    let sprite = gameSkin.getWeapon(weapon)
+    const sprite = gameSkin.getWeapon(weapon, attachment.facingLeft)
     const size = gameSkin.getWeaponRenderSize(weapon)
     if (!sprite || !size) return null
-
-    if (attachment.facingLeft) sprite = Canvas.flipY(sprite)
 
     const width = size.width * this._scale
     const height = size.height * this._scale
@@ -197,13 +195,12 @@ export class Tee {
       attachment.centerY + dirY * (1 + offset.x) * this._scale + perpY * offset.y * this._scale
     const handAngle = angle + (facingLeft ? -offset.angle : offset.angle)
 
-    let hand = this._skin.getHand()
-    let handShadow = this._skin.getHandShadow()
-    if (this._colors?.body) {
-      const color = RgbColor.fromTeeColor(this._colors.body)
-      hand = Canvas.tint(hand, color)
-      handShadow = Canvas.tint(handShadow, color)
-    }
+    const hand = this._getTintedPart('handTint', this._skin.getHand(), this._colors?.body)
+    const handShadow = this._getTintedPart(
+      'handShadowTint',
+      this._skin.getHandShadow(),
+      this._colors?.body,
+    )
 
     const size = 20 * this._scale
 
@@ -251,12 +248,8 @@ export class Tee {
   private _renderBody(poseFrame: IPoseFrame) {
     const key = TeePartType.Body + poseFrame.bodyOffsetY + '_' + this._canvasSize
     if (!this._cache[key]) {
-      let body = this._renderPart(this._skin.getBody(), 96, 0, poseFrame.bodyOffsetY, 2 / 3)
-      if (this._colors?.body) {
-        const color = RgbColor.fromTeeColor(this._colors.body)
-        body = Canvas.tint(body, color, true)
-      }
-      this._cache[key] = body
+      const body = this._getTintedPart('bodyTint', this._skin.getBody(), this._colors?.body, true)
+      this._cache[key] = this._renderPart(body, 96, 0, poseFrame.bodyOffsetY, 2 / 3)
     }
     return this._cache[key]
   }
@@ -264,18 +257,12 @@ export class Tee {
   private _renderBodyShadow(poseFrame: IPoseFrame) {
     const key = TeePartType.BodyShadow + poseFrame.bodyOffsetY + '_' + this._canvasSize
     if (!this._cache[key]) {
-      let bodyShadow = this._renderPart(
+      const bodyShadow = this._getTintedPart(
+        'bodyShadowTint',
         this._skin.getBodyShadow(),
-        96,
-        0,
-        poseFrame.bodyOffsetY,
-        2 / 3,
+        this._colors?.body,
       )
-      if (this._colors?.body) {
-        const color = RgbColor.fromTeeColor(this._colors.body)
-        bodyShadow = Canvas.tint(bodyShadow, color)
-      }
-      this._cache[key] = bodyShadow
+      this._cache[key] = this._renderPart(bodyShadow, 96, 0, poseFrame.bodyOffsetY, 2 / 3)
     }
     return this._cache[key]
   }
@@ -284,12 +271,8 @@ export class Tee {
     const { x, y, rotation } = poseFrame.frontFoot
     const key = `${TeePartType.FrontFoot}${x}_${y}_${rotation}_${this._canvasSize}`
     if (!this._cache[key]) {
-      let frontFoot = this._renderPart(this._skin.getFoot(), 64, x, y, 1, rotation)
-      if (this._colors?.feet) {
-        const color = RgbColor.fromTeeColor(this._colors.feet)
-        frontFoot = Canvas.tint(frontFoot, color)
-      }
-      this._cache[key] = frontFoot
+      const foot = this._getTintedPart('footTint', this._skin.getFoot(), this._colors?.feet)
+      this._cache[key] = this._renderPart(foot, 64, x, y, 1, rotation)
     }
     return this._cache[key]
   }
@@ -298,12 +281,12 @@ export class Tee {
     const { x, y, rotation } = poseFrame.frontFoot
     const key = `${TeePartType.FrontFootShadow}${x}_${y}_${rotation}_${this._canvasSize}`
     if (!this._cache[key]) {
-      let frontFootShadow = this._renderPart(this._skin.getFootShadow(), 64, x, y, 1, rotation)
-      if (this._colors?.feet) {
-        const color = RgbColor.fromTeeColor(this._colors.feet)
-        frontFootShadow = Canvas.tint(frontFootShadow, color)
-      }
-      this._cache[key] = frontFootShadow
+      const footShadow = this._getTintedPart(
+        'footShadowTint',
+        this._skin.getFootShadow(),
+        this._colors?.feet,
+      )
+      this._cache[key] = this._renderPart(footShadow, 64, x, y, 1, rotation)
     }
     return this._cache[key]
   }
@@ -312,12 +295,8 @@ export class Tee {
     const { x, y, rotation } = poseFrame.backFoot
     const key = `${TeePartType.BackFoot}${x}_${y}_${rotation}_${this._canvasSize}`
     if (!this._cache[key]) {
-      let backFoot = this._renderPart(this._skin.getFoot(), 64, x, y, 1, rotation)
-      if (this._colors?.feet) {
-        const color = RgbColor.fromTeeColor(this._colors.feet)
-        backFoot = Canvas.tint(backFoot, color)
-      }
-      this._cache[key] = backFoot
+      const foot = this._getTintedPart('footTint', this._skin.getFoot(), this._colors?.feet)
+      this._cache[key] = this._renderPart(foot, 64, x, y, 1, rotation)
     }
     return this._cache[key]
   }
@@ -326,12 +305,12 @@ export class Tee {
     const { x, y, rotation } = poseFrame.backFoot
     const key = `${TeePartType.BackFootShadow}${x}_${y}_${rotation}_${this._canvasSize}`
     if (!this._cache[key]) {
-      let backFootShadow = this._renderPart(this._skin.getFootShadow(), 64, x, y, 1, rotation)
-      if (this._colors?.feet) {
-        const color = RgbColor.fromTeeColor(this._colors.feet)
-        backFootShadow = Canvas.tint(backFootShadow, color)
-      }
-      this._cache[key] = backFootShadow
+      const footShadow = this._getTintedPart(
+        'footShadowTint',
+        this._skin.getFootShadow(),
+        this._colors?.feet,
+      )
+      this._cache[key] = this._renderPart(footShadow, 64, x, y, 1, rotation)
     }
     return this._cache[key]
   }
@@ -361,18 +340,27 @@ export class Tee {
         offsetY = yBase + (-0.05 + dirY * 0.1) * 64
       }
 
-      const leftEye = this._skin.getEye(eye)
+      const leftEye = this._getTintedPart('eyeTint' + eye, this._skin.getEye(eye), this._colors?.body)
       const rightEye = Canvas.flip(leftEye)
 
       const leftEyeCanvas = this._renderPart(leftEye, 32, leftOffsetX, offsetY, scale)
       const rightEyeCanvas = this._renderPart(rightEye, 32, rightOffsetX, offsetY, scale)
-      let canvas = Canvas.merge(leftEyeCanvas, rightEyeCanvas)!
+      this._cache[key] = Canvas.merge(leftEyeCanvas, rightEyeCanvas)!
+    }
+    return this._cache[key]
+  }
 
-      if (this._colors?.body) {
-        const color = RgbColor.fromTeeColor(this._colors.body)
-        canvas = Canvas.tint(canvas, color)
-      }
-      this._cache[key] = canvas
+  private _getTintedPart(
+    cacheKey: string,
+    part: HTMLCanvasElement,
+    color: TeeColor | undefined,
+    weighted = false,
+  ) {
+    if (!color) return part
+
+    const key = `${cacheKey}_${color.code}`
+    if (!this._cache[key]) {
+      this._cache[key] = Canvas.tint(part, RgbColor.fromTeeColor(color), weighted)
     }
     return this._cache[key]
   }

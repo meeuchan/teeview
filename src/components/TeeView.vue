@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, useTemplateRef, watch } from 'vue'
 import { Renderer, type IRendererOptions } from '@/lib/Renderer'
-import Canvas from '@/lib/Canvas'
 import { WeaponType } from '@/lib/Parts'
 
 const props = defineProps<{
@@ -45,7 +44,7 @@ function renderTee(options: IRendererOptions) {
   canvas.value.height = render.height
   ctx.drawImage(render, 0, 0)
 
-  emit('change', Canvas.clone(canvas.value))
+  emit('change', render)
 }
 </script>
 
