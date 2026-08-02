@@ -31,7 +31,7 @@ function buildOptions() {
 <template>
   <form class="container-fluid g-0" @submit.prevent>
     <div class="row">
-      <div class="col">
+      <div class="col-sm mb-2 mb-md-0">
         <div class="form-check mb-3">
           <input id="noFaceCheckbox" type="checkbox" v-model="noFace" @change="buildOptions()"
             class="form-check-input" />
@@ -46,7 +46,7 @@ function buildOptions() {
           </select>
         </div>
       </div>
-      <div class="col">
+      <div class="col-sm mb-2 mb-md-0">
         <label class="form-label mb-0">Direction:</label>
         <InputEyeAngle :angle="eyeAngle" :disabled="noFace" @input="((eyeAngle = $event), buildOptions())" />
       </div>
