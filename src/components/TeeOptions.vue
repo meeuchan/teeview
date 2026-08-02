@@ -4,9 +4,11 @@ import Tab from './tabs/Tab.vue'
 import Tabs from './tabs/Tabs.vue'
 import TeeOptionsSkin from './TeeOptionsSkin.vue'
 import type { IRendererOptions } from '@/lib/Renderer'
-import TeeOptionsPart, { type IPartsOptions } from './TeeOptionsPart.vue'
-import TeeOptionsColor from './TeeOptionsColor.vue'
-import type { ITeeColors } from '@/lib/Tee'
+import TeeOptionsEyes, { type IEyesOptions } from './TeeOptionsEyes.vue'
+import TeeOptionsPose, { type IPoseOptions } from './TeeOptionsPose.vue'
+import TeeOptionsColors from './TeeOptionsColors.vue'
+import TeeOptionsWeapon, { type IWeaponOptions } from './TeeOptionsWeapon.vue'
+import type { IColorPreset, ITeeColors } from '@/lib/Tee'
 import TeeOptionsDownload from './TeeOptionsDownload.vue'
 
 const props = defineProps<{
@@ -15,7 +17,10 @@ const props = defineProps<{
 
 const skin = ref<HTMLImageElement>()
 const colorOptions = ref<ITeeColors>()
-const partOptions = ref<IPartsOptions>()
+const colorPreset = ref<IColorPreset>()
+const eyesOptions = ref<IEyesOptions>()
+const poseOptions = ref<IPoseOptions>()
+const weaponOptions = ref<IWeaponOptions>()
 
 const emit = defineEmits<{
   change: [value: IRendererOptions]
@@ -27,7 +32,9 @@ function buildOptions() {
   const options: IRendererOptions = {
     skin: skin.value,
     colors: colorOptions.value,
-    ...partOptions.value,
+    ...eyesOptions.value,
+    ...poseOptions.value,
+    ...weaponOptions.value,
   }
   emit('change', options)
 }
@@ -38,13 +45,19 @@ function buildOptions() {
     <div class="card">
       <Tabs>
         <Tab title="Skin" class="card-body">
-          <TeeOptionsSkin @change="((skin = $event), buildOptions())" />
+          <TeeOptionsSkin @change="((skin = $event), buildOptions())" @colors="colorPreset = $event" />
         </Tab>
-        <Tab title="Color" :disabled="!skin" class="card-body">
-          <TeeOptionsColor @change="((colorOptions = $event), buildOptions())" />
+        <Tab title="Colors" :disabled="!skin" class="card-body">
+          <TeeOptionsColors :preset="colorPreset" @change="((colorOptions = $event), buildOptions())" />
         </Tab>
-        <Tab title="Parts" :disabled="!skin" class="card-body">
-          <TeeOptionsPart @change="((partOptions = $event), buildOptions())" />
+        <Tab title="Eyes" :disabled="!skin" class="card-body">
+          <TeeOptionsEyes @change="((eyesOptions = $event), buildOptions())" />
+        </Tab>
+        <Tab title="Pose" :disabled="!skin" class="card-body">
+          <TeeOptionsPose @change="((poseOptions = $event), buildOptions())" />
+        </Tab>
+        <Tab title="Weapon" :disabled="!skin" class="card-body">
+          <TeeOptionsWeapon @change="((weaponOptions = $event), buildOptions())" />
         </Tab>
         <Tab title="Download" :disabled="!skin" class="card-body">
           <TeeOptionsDownload :result="props.result" />

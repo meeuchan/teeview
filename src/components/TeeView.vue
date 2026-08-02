@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { onMounted, ref, useTemplateRef, watch } from 'vue'
+import { computed, onMounted, ref, useTemplateRef, watch } from 'vue'
 import { Renderer, type IRendererOptions } from '@/lib/Renderer'
-import Canvas from '@/lib/Canvas'
+import { WeaponType } from '@/lib/Parts'
 
 const props = defineProps<{
   options?: IRendererOptions
@@ -13,6 +13,14 @@ const canvas = useTemplateRef('teePreview')
 const emit = defineEmits<{
   change: [value: HTMLCanvasElement]
 }>()
+
+const hasWeapon = computed(
+  () =>
+    props.options?.weapon !== undefined &&
+    props.options.weapon !== WeaponType.None &&
+    !!props.options?.gameSkin,
+)
+const previewSize = computed(() => (hasWeapon.value ? 480 : 192))
 
 onMounted(() => {
   if (props.options) renderTee(props.options)
@@ -36,23 +44,13 @@ function renderTee(options: IRendererOptions) {
   canvas.value.height = render.height
   ctx.drawImage(render, 0, 0)
 
-  emit('change', Canvas.clone(canvas.value))
+  emit('change', render)
 }
 </script>
 
 <template>
-  <div id="teeView" class="card d-flex align-items-center justify-content-center">
-    <canvas id="teePreview" ref="teePreview"></canvas>
+  <div id="teeView" class="card d-flex align-items-center justify-content-center" :style="{ height: '480px' }">
+    <canvas id="teePreview" ref="teePreview"
+      :style="{ height: previewSize + 'px', width: previewSize + 'px' }"></canvas>
   </div>
 </template>
-
-<style lang="scss" scoped>
-#teeView {
-  height: 256px;
-}
-
-#teePreview {
-  height: 192px;
-  width: 192px;
-}
-</style>

@@ -1,9 +1,13 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import InputTeeColor from './inputs/InputTeeColor.vue'
 import { TeeColor } from '@/lib/Color'
-import type { ITeeColors } from '@/lib/Tee'
+import type { IColorPreset, ITeeColors } from '@/lib/Tee'
 import { debounce } from '@/utils'
+
+const props = defineProps<{
+  preset?: IColorPreset
+}>()
 
 const useCustomColors = ref(false)
 const bodyColor = ref<TeeColor>()
@@ -14,6 +18,18 @@ const emit = defineEmits<{
 }>()
 
 const debouncedChangeEmit = debounce((value: ITeeColors | undefined) => emit('change', value))
+
+watch(
+  () => props.preset,
+  (preset) => {
+    if (!preset) return
+
+    useCustomColors.value = preset.useCustomColors
+    if (preset.body) bodyColor.value = preset.body
+    if (preset.feet) feetColor.value = preset.feet
+    buildOptions()
+  },
+)
 
 function buildOptions() {
   if (useCustomColors.value && bodyColor.value && feetColor.value) {
@@ -28,7 +44,7 @@ function buildOptions() {
 </script>
 
 <template>
-  <form class="container-fluid g-0">
+  <form class="container-fluid g-0" @submit.prevent>
     <div class="row mb-2">
       <div class="col">
         <div class="form-check">
@@ -46,11 +62,19 @@ function buildOptions() {
     <div class="row">
       <div class="col-sm mb-2 mb-md-0">
         <label class="form-label">Body:</label>
-        <InputTeeColor @input="((bodyColor = $event), buildOptions())" />
+        <InputTeeColor
+          :code="bodyColor?.code"
+          :disabled="!useCustomColors"
+          @input="((bodyColor = $event), buildOptions())"
+        />
       </div>
       <div class="col-sm">
         <label class="form-label">Feet:</label>
-        <InputTeeColor @input="((feetColor = $event), buildOptions())" />
+        <InputTeeColor
+          :code="feetColor?.code"
+          :disabled="!useCustomColors"
+          @input="((feetColor = $event), buildOptions())"
+        />
       </div>
     </div>
   </form>

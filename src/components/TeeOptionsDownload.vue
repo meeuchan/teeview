@@ -24,12 +24,25 @@ function downloadEmojiSize() {
   const resizedCanvas = Canvas.resizeSmooth(props.result, 128, 128)
   downloadCanvas(resizedCanvas)
 }
+
+function downloadSmartCrop() {
+  if (!props.result) return
+  const croppedCanvas = Canvas.cropToContent(props.result)
+  downloadCanvas(croppedCanvas)
+}
+
+function downloadSmartCropEmojiSize() {
+  if (!props.result) return
+  const croppedCanvas = Canvas.cropToContent(props.result)
+  const resizedCanvas = Canvas.resizeContain(croppedCanvas, 128, 128)
+  downloadCanvas(resizedCanvas)
+}
 </script>
 
 <template>
   <div class="container-fluid g-0">
     <div class="row">
-      <div class="col d-flex gap-2">
+      <div class="col d-flex flex-column gap-2">
         <button class="btn btn-primary" @click="downloadFullSize()">
           <DownloadIcon class="me-1" /> Full Size ({{ props.result?.width }}x{{
             props.result?.height
@@ -37,6 +50,12 @@ function downloadEmojiSize() {
         </button>
         <button class="btn btn-primary" @click="downloadEmojiSize()">
           <DownloadIcon class="me-1" /> Emoji Size (128x128)
+        </button>
+        <button class="btn btn-primary" @click="downloadSmartCrop()">
+          <DownloadIcon class="me-1" /> Smart Crop
+        </button>
+        <button class="btn btn-primary" @click="downloadSmartCropEmojiSize()">
+          <DownloadIcon class="me-1" /> Smart Crop + Emoji Size (128x128)
         </button>
       </div>
     </div>

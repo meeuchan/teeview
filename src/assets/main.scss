@@ -12,14 +12,7 @@ $font-family-base: 'Nunito', sans-serif;
   height: 100vh;
   display: flex;
   justify-content: center;
-
-  @include media-breakpoint-up(sm) {
-    align-items: center;
-  }
-
-  @include media-breakpoint-down(sm) {
-    margin-top: 1rem;
-  }
+  padding-top: 16px;
 }
 
 .app-container {

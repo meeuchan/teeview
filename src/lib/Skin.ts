@@ -46,6 +46,20 @@ export class Skin {
     return this._cache[SkinPartType.FootShadow]
   }
 
+  public getHand() {
+    if (!this._cache[SkinPartType.Hand]) {
+      this._cache[SkinPartType.Hand] = this._getPart(32, 32, 192, 0)
+    }
+    return this._cache[SkinPartType.Hand]
+  }
+
+  public getHandShadow() {
+    if (!this._cache[SkinPartType.HandShadow]) {
+      this._cache[SkinPartType.HandShadow] = this._getPart(32, 32, 224, 0)
+    }
+    return this._cache[SkinPartType.HandShadow]
+  }
+
   public getEye(eye: EyeType) {
     const key = SkinPartType.Eye + eye
     if (!this._cache[key]) {

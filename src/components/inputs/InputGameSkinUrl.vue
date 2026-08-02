@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, useTemplateRef } from 'vue'
-import { getSkinImageByNameOrUrl } from '@/utils'
+import { getGameSkinImageFromUrl } from '@/utils'
 
 const input = useTemplateRef('fileInput')
 const hasInputChanged = ref(false)
@@ -10,21 +10,21 @@ const emit = defineEmits<{
   input: [value: HTMLImageElement]
 }>()
 
-async function getSkin() {
+async function getGameSkin() {
   clearError()
 
   const url = input.value?.value
   if (!url) {
-    setError('Please input something.')
+    setError('Please input a URL.')
     return
   }
 
   try {
-    const img = await getSkinImageByNameOrUrl(url)
+    const img = await getGameSkinImageFromUrl(url)
     hasInputChanged.value = true
     emit('input', img)
   } catch (e) {
-    setError(e instanceof Error ? e.message : 'Invalid URL or skin name.')
+    setError(e instanceof Error ? e.message : 'Invalid URL.')
   }
 }
 
@@ -45,8 +45,9 @@ function clearError() {
   <form @submit.prevent="" novalidate class="needs-validation position-relative"
     :class="[hasInputChanged && 'was-validated']">
     <div class="input-group has-validation">
-      <span class="input-group-text" id="basic-addon1">URL/Name</span>
-      <input ref="fileInput" type="text" @change="getSkin()" class="form-control me-1" required placeholder="default" />
+      <span class="input-group-text" id="basic-addon1">URL</span>
+      <input ref="fileInput" type="text" @change="getGameSkin()" class="form-control me-1" required
+        placeholder="https://.../game.png" />
       <div class="invalid-tooltip">{{ inputError }}</div>
     </div>
   </form>
