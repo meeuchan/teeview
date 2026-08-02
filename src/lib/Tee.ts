@@ -124,14 +124,14 @@ export class Tee {
   private _renderEyes(eye: EyeType, face: FaceType) {
     const key = TeePartType.Eye + eye + face
     if (!this._cache[key]) {
-      let leftOffsetX = 23.0625
-      let rightOffsetX = 31.375
-      const offsetY = 15.9625
+      let leftOffsetX = 23.04
+      let rightOffsetX = 31.36
+      const offsetY = 16
       const scale = 0.8
 
       if (face == FaceType.Front) {
-        leftOffsetX = 15.05
-        rightOffsetX = 23.3625
+        leftOffsetX = 15.04
+        rightOffsetX = 23.36
       }
 
       const leftEye = this._skin.getEye(eye)
