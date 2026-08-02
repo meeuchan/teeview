@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import InputSkinFile from './inputs/InputSkinFile.vue'
 import InputSkinUrl from './inputs/InputSkinUrl.vue'
 import InputSkinCommand from './inputs/InputSkinCommand.vue'
 import type { IColorPreset } from '@/lib/Tee'
+import { getImageFromUrl } from '@/utils'
 
 type SkinInputMode = 'file' | 'url' | 'command'
 
@@ -19,6 +20,11 @@ function setSkin(img: HTMLImageElement) {
   skin.value = img
   emit('change', img)
 }
+
+onMounted(async () => {
+  const img = await getImageFromUrl(`${import.meta.env.BASE_URL}default.png`)
+  setSkin(img)
+})
 </script>
 
 <template>
