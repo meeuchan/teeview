@@ -56,6 +56,16 @@ export default {
     return flippedCanvas
   },
 
+  flipY(canvas: HTMLCanvasElement) {
+    const { canvas: flippedCanvas, ctx } = this.create(canvas.width, canvas.height)
+
+    ctx.translate(0, canvas.height)
+    ctx.scale(1, -1)
+    ctx.drawImage(canvas, 0, 0)
+
+    return flippedCanvas
+  },
+
   scaleY(canvas: HTMLCanvasElement, scaleY: number, offsetY = 0) {
     const { canvas: scaledCanvas, ctx } = this.create(canvas.width, canvas.height)
 

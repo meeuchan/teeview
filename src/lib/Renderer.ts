@@ -1,16 +1,19 @@
 import { TeeColor } from './Color'
+import { GameSkin } from './GameSkin'
 import { Skin } from './Skin'
 import { Tee, type ITeeColors, type ITeeOptions } from './Tee'
 
 export type IRendererOptions = {
   skin: HTMLImageElement
   colors?: ITeeColors
-} & ITeeOptions
+  gameSkin?: HTMLImageElement
+} & Omit<ITeeOptions, 'gameSkin'>
 
 export class Renderer {
   private _options: IRendererOptions | null = null
   private _skin: Skin | null = null
   private _tee: Tee | null = null
+  private _gameSkin: GameSkin | null = null
 
   public render(options: IRendererOptions) {
     let skinChanged = false
@@ -31,8 +34,28 @@ export class Renderer {
       this._tee = new Tee(this._skin, options.colors)
     }
 
+    if (options.gameSkin) {
+      if (
+        !this._gameSkin ||
+        !this._options?.gameSkin ||
+        this._areImagesDifferent(this._options.gameSkin, options.gameSkin)
+      ) {
+        this._gameSkin = new GameSkin(options.gameSkin)
+      }
+    } else {
+      this._gameSkin = null
+    }
+
     this._options = options
-    return this._tee.render(options)
+    return this._tee.render({
+      eyes: options.eyes,
+      eyeAngle: options.eyeAngle,
+      pose: options.pose,
+      noFace: options.noFace,
+      noFeet: options.noFeet,
+      weapon: options.weapon,
+      gameSkin: this._gameSkin ?? undefined,
+    })
   }
 
   private _areImagesDifferent(img1: HTMLImageElement, img2: HTMLImageElement) {

@@ -7,6 +7,7 @@ import type { IRendererOptions } from '@/lib/Renderer'
 import TeeOptionsEyes, { type IEyesOptions } from './TeeOptionsEyes.vue'
 import TeeOptionsPose, { type IPoseOptions } from './TeeOptionsPose.vue'
 import TeeOptionsColors from './TeeOptionsColors.vue'
+import TeeOptionsWeapon, { type IWeaponOptions } from './TeeOptionsWeapon.vue'
 import type { IColorPreset, ITeeColors } from '@/lib/Tee'
 import TeeOptionsDownload from './TeeOptionsDownload.vue'
 
@@ -19,6 +20,7 @@ const colorOptions = ref<ITeeColors>()
 const colorPreset = ref<IColorPreset>()
 const eyesOptions = ref<IEyesOptions>()
 const poseOptions = ref<IPoseOptions>()
+const weaponOptions = ref<IWeaponOptions>()
 
 const emit = defineEmits<{
   change: [value: IRendererOptions]
@@ -32,6 +34,7 @@ function buildOptions() {
     colors: colorOptions.value,
     ...eyesOptions.value,
     ...poseOptions.value,
+    ...weaponOptions.value,
   }
   emit('change', options)
 }
@@ -52,6 +55,9 @@ function buildOptions() {
         </Tab>
         <Tab title="Pose" :disabled="!skin" class="card-body">
           <TeeOptionsPose @change="((poseOptions = $event), buildOptions())" />
+        </Tab>
+        <Tab title="Weapon" :disabled="!skin" class="card-body">
+          <TeeOptionsWeapon @change="((weaponOptions = $event), buildOptions())" />
         </Tab>
         <Tab title="Download" :disabled="!skin" class="card-body">
           <TeeOptionsDownload :result="props.result" />

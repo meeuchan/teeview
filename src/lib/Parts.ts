@@ -4,6 +4,8 @@ export enum SkinPartType {
   Foot = 'foot',
   FootShadow = 'footShadow',
   Eye = 'eye',
+  Hand = 'hand',
+  HandShadow = 'handShadow',
 }
 
 export enum TeePartType {
@@ -48,4 +50,24 @@ export const PoseTypeLabels: Record<PoseType, string> = {
   [PoseType.Idle]: 'Idle',
   [PoseType.InAir]: 'In Air',
   [PoseType.Sit]: 'Sit',
+}
+
+export enum WeaponType {
+  None,
+  Hammer,
+  Gun,
+  Shotgun,
+  Grenade,
+  Laser,
+  Ninja,
+}
+
+export const WeaponTypeLabels: Record<WeaponType, string> = {
+  [WeaponType.None]: 'None',
+  [WeaponType.Hammer]: 'Hammer',
+  [WeaponType.Gun]: 'Gun',
+  [WeaponType.Shotgun]: 'Shotgun',
+  [WeaponType.Grenade]: 'Grenade',
+  [WeaponType.Laser]: 'Laser',
+  [WeaponType.Ninja]: 'Ninja',
 }

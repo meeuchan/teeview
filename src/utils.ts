@@ -60,6 +60,18 @@ export const getSkinImageByNameOrUrl = async (nameOrUrl: string) => {
   return img
 }
 
+export const getGameSkinImageFromUrl = async (url: string) => {
+  const img = url.endsWith('.svg') ? await getRasterizedSvgImage(url) : await getImageFromUrl(url)
+  img.setAttribute('name', url)
+  img.setAttribute('lastModified', 'x')
+
+  if (img.width / img.height !== 2 || img.width < 256 || img.height < 128) {
+    throw new Error('The image must have a 2:1 size ratio and a minimum size of 256x128px.')
+  }
+
+  return img
+}
+
 export interface IParsedSkinCommand {
   skinName?: string
   useCustomColors?: boolean

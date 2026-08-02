@@ -1,6 +1,7 @@
 import Canvas from './Canvas'
 import { RgbColor, type TeeColor } from './Color'
-import { EyeType, PoseType, TeePartType } from './Parts'
+import type { GameSkin } from './GameSkin'
+import { EyeType, PoseType, TeePartType, WeaponType } from './Parts'
 import type { Skin } from './Skin'
 
 export interface ITeeColors {
@@ -20,7 +21,29 @@ export interface ITeeOptions {
   pose?: PoseType
   noFace?: boolean
   noFeet?: boolean
+  weapon?: WeaponType
+  gameSkin?: GameSkin
 }
+
+const WEAPON_POSITION_OFFSETS: Partial<Record<WeaponType, { x: number; y: number }>> = {
+  [WeaponType.Gun]: { x: 32, y: 4 },
+  [WeaponType.Shotgun]: { x: 24, y: -2 },
+  [WeaponType.Grenade]: { x: 24, y: -2 },
+  [WeaponType.Laser]: { x: 24, y: -2 },
+}
+
+const HAND_OFFSETS: Partial<Record<WeaponType, { angle: number; x: number; y: number }>> = {
+  [WeaponType.Gun]: { angle: -135, x: -15, y: 4 },
+  [WeaponType.Shotgun]: { angle: -90, x: -5, y: 4 },
+  [WeaponType.Grenade]: { angle: -90, x: -4, y: 7 },
+}
+
+const MIN_RENDER_SIZE = 192
+
+const HAMMER_OFFSET = { x: 4, y: -20 }
+const HAMMER_ATTACH_ANGLE = -0.1 * 360
+const HAMMER_AFK_ROTATION = { left: 100, right: 500 }
+const NINJA_ATTACH_ANGLE = -0.25 * 360
 
 interface IFootFrame {
   x: number
@@ -34,25 +57,48 @@ interface IPoseFrame {
   frontFoot: IFootFrame
 }
 
+interface IWeaponAttachment {
+  centerX: number
+  centerY: number
+  dirX: number
+  dirY: number
+  angle: number
+  facingLeft: boolean
+  rotation: number
+}
+
 export class Tee {
   private _skin: Skin
   private _size: number
   private _scale: number
   private _colors: ITeeColors | undefined
   private _cache: Record<string, HTMLCanvasElement> = {}
+  private _canvasSize: number
+  private _padding = 0
 
   constructor(skin: Skin, colors?: ITeeColors) {
     this._skin = skin
-    this._size = skin.height * 0.75
+    this._size = Math.max(skin.height * 0.75, MIN_RENDER_SIZE)
     this._scale = this._size / 64
+    this._canvasSize = this._size
     this._colors = colors
   }
 
   public render(options?: ITeeOptions) {
     const eyeAngle = options?.eyeAngle === undefined ? 0 : options.eyeAngle
-    const poseFrame = this._getPoseFrame(options?.pose ?? PoseType.Idle, eyeAngle)
+    const pose = options?.pose ?? PoseType.Idle
+    const poseFrame = this._getPoseFrame(pose, eyeAngle)
+    const weapon = options?.weapon ?? WeaponType.None
+    const hasWeapon = weapon !== WeaponType.None && !!options?.gameSkin
+
+    this._canvasSize = hasWeapon ? this._size * 2.5 : this._size
+    this._padding = hasWeapon ? this._size * 0.75 : 0
+
+    const attachment = hasWeapon ? this._getWeaponAttachment(weapon, eyeAngle, pose) : null
 
     return Canvas.merge(
+      attachment ? this._renderWeapon(weapon, options!.gameSkin!, attachment) : null,
+      attachment ? this._renderHand(weapon, attachment) : null,
       options?.noFeet ? null : this._renderBackFootShadow(poseFrame),
       this._renderBodyShadow(poseFrame),
       options?.noFeet ? null : this._renderFrontFootShadow(poseFrame),
@@ -63,6 +109,111 @@ export class Tee {
         : this._renderEyes(options?.eyes ?? EyeType.Normal, eyeAngle, poseFrame.bodyOffsetY),
       options?.noFeet ? null : this._renderFrontFoot(poseFrame),
     )
+  }
+
+  private _getWeaponAttachment(
+    weapon: WeaponType,
+    eyeAngle: number | null,
+    pose: PoseType,
+  ): IWeaponAttachment {
+    const angle = eyeAngle ?? 0
+    const rad = (angle * Math.PI) / 180
+    const dirX = Math.cos(rad)
+    const dirY = Math.sin(rad)
+    const facingLeft = dirX < 0
+    const isSit = pose === PoseType.Sit
+
+    const positionX = 32 * this._scale + this._padding
+    const positionY = 36 * this._scale + this._padding
+
+    if (weapon === WeaponType.Hammer) {
+      const centerX = positionX - (facingLeft ? HAMMER_OFFSET.x * this._scale : 0)
+      const centerY = positionY + HAMMER_OFFSET.y * this._scale + (isSit ? 3 * this._scale : 0)
+
+      let rotation: number
+      if (isSit) {
+        const radians = facingLeft ? HAMMER_AFK_ROTATION.left : HAMMER_AFK_ROTATION.right
+        let deg = ((radians * 180) / Math.PI) % 360
+        if (deg > 180) deg -= 360
+        rotation = deg
+      } else {
+        rotation = facingLeft ? -90 - HAMMER_ATTACH_ANGLE : -90 + HAMMER_ATTACH_ANGLE
+      }
+
+      return { centerX, centerY, dirX, dirY, angle, facingLeft, rotation }
+    }
+
+    if (weapon === WeaponType.Ninja) {
+      const centerY = positionY + (isSit ? 3 * this._scale : 0)
+      const rotation = facingLeft ? -90 - NINJA_ATTACH_ANGLE : -90 + NINJA_ATTACH_ANGLE
+
+      return { centerX: positionX, centerY, dirX, dirY, angle, facingLeft, rotation }
+    }
+
+    const offset = WEAPON_POSITION_OFFSETS[weapon]
+    if (!offset) {
+      return { centerX: positionX, centerY: positionY, dirX, dirY, angle, facingLeft, rotation: angle }
+    }
+
+    const centerX = positionX + dirX * offset.x * this._scale
+    const centerY =
+      positionY +
+      dirY * offset.x * this._scale +
+      offset.y * this._scale +
+      (isSit ? 3 * this._scale : 0)
+
+    return { centerX, centerY, dirX, dirY, angle, facingLeft, rotation: angle }
+  }
+
+  private _renderWeapon(weapon: WeaponType, gameSkin: GameSkin, attachment: IWeaponAttachment) {
+    let sprite = gameSkin.getWeapon(weapon)
+    const size = gameSkin.getWeaponRenderSize(weapon)
+    if (!sprite || !size) return null
+
+    if (attachment.facingLeft) sprite = Canvas.flipY(sprite)
+
+    const width = size.width * this._scale
+    const height = size.height * this._scale
+
+    const { canvas, ctx } = Canvas.create(this._canvasSize)
+    ctx.translate(attachment.centerX, attachment.centerY)
+    ctx.rotate((attachment.rotation * Math.PI) / 180)
+    ctx.drawImage(sprite, -width / 2, -height / 2, width, height)
+
+    return canvas
+  }
+
+  private _renderHand(weapon: WeaponType, attachment: IWeaponAttachment) {
+    const offset = HAND_OFFSETS[weapon]
+    if (!offset) return null
+
+    const { dirX, dirY, angle, facingLeft } = attachment
+    const perpX = facingLeft ? dirY : -dirY
+    const perpY = facingLeft ? -dirX : dirX
+
+    const centerX =
+      attachment.centerX + dirX * (1 + offset.x) * this._scale + perpX * offset.y * this._scale
+    const centerY =
+      attachment.centerY + dirY * (1 + offset.x) * this._scale + perpY * offset.y * this._scale
+    const handAngle = angle + (facingLeft ? -offset.angle : offset.angle)
+
+    let hand = this._skin.getHand()
+    let handShadow = this._skin.getHandShadow()
+    if (this._colors?.body) {
+      const color = RgbColor.fromTeeColor(this._colors.body)
+      hand = Canvas.tint(hand, color)
+      handShadow = Canvas.tint(handShadow, color)
+    }
+
+    const size = 20 * this._scale
+
+    const { canvas, ctx } = Canvas.create(this._canvasSize)
+    ctx.translate(centerX, centerY)
+    ctx.rotate((handAngle * Math.PI) / 180)
+    ctx.drawImage(handShadow, -size / 2, -size / 2, size, size)
+    ctx.drawImage(hand, -size / 2, -size / 2, size, size)
+
+    return canvas
   }
 
   private _getPoseFrame(pose: PoseType, eyeAngle: number | null): IPoseFrame {
@@ -98,7 +249,7 @@ export class Tee {
   }
 
   private _renderBody(poseFrame: IPoseFrame) {
-    const key = TeePartType.Body + poseFrame.bodyOffsetY
+    const key = TeePartType.Body + poseFrame.bodyOffsetY + '_' + this._canvasSize
     if (!this._cache[key]) {
       let body = this._renderPart(this._skin.getBody(), 96, 0, poseFrame.bodyOffsetY, 2 / 3)
       if (this._colors?.body) {
@@ -111,7 +262,7 @@ export class Tee {
   }
 
   private _renderBodyShadow(poseFrame: IPoseFrame) {
-    const key = TeePartType.BodyShadow + poseFrame.bodyOffsetY
+    const key = TeePartType.BodyShadow + poseFrame.bodyOffsetY + '_' + this._canvasSize
     if (!this._cache[key]) {
       let bodyShadow = this._renderPart(
         this._skin.getBodyShadow(),
@@ -131,7 +282,7 @@ export class Tee {
 
   private _renderFrontFoot(poseFrame: IPoseFrame) {
     const { x, y, rotation } = poseFrame.frontFoot
-    const key = `${TeePartType.FrontFoot}${x}_${y}_${rotation}`
+    const key = `${TeePartType.FrontFoot}${x}_${y}_${rotation}_${this._canvasSize}`
     if (!this._cache[key]) {
       let frontFoot = this._renderPart(this._skin.getFoot(), 64, x, y, 1, rotation)
       if (this._colors?.feet) {
@@ -145,7 +296,7 @@ export class Tee {
 
   private _renderFrontFootShadow(poseFrame: IPoseFrame) {
     const { x, y, rotation } = poseFrame.frontFoot
-    const key = `${TeePartType.FrontFootShadow}${x}_${y}_${rotation}`
+    const key = `${TeePartType.FrontFootShadow}${x}_${y}_${rotation}_${this._canvasSize}`
     if (!this._cache[key]) {
       let frontFootShadow = this._renderPart(this._skin.getFootShadow(), 64, x, y, 1, rotation)
       if (this._colors?.feet) {
@@ -159,7 +310,7 @@ export class Tee {
 
   private _renderBackFoot(poseFrame: IPoseFrame) {
     const { x, y, rotation } = poseFrame.backFoot
-    const key = `${TeePartType.BackFoot}${x}_${y}_${rotation}`
+    const key = `${TeePartType.BackFoot}${x}_${y}_${rotation}_${this._canvasSize}`
     if (!this._cache[key]) {
       let backFoot = this._renderPart(this._skin.getFoot(), 64, x, y, 1, rotation)
       if (this._colors?.feet) {
@@ -173,7 +324,7 @@ export class Tee {
 
   private _renderBackFootShadow(poseFrame: IPoseFrame) {
     const { x, y, rotation } = poseFrame.backFoot
-    const key = `${TeePartType.BackFootShadow}${x}_${y}_${rotation}`
+    const key = `${TeePartType.BackFootShadow}${x}_${y}_${rotation}_${this._canvasSize}`
     if (!this._cache[key]) {
       let backFootShadow = this._renderPart(this._skin.getFootShadow(), 64, x, y, 1, rotation)
       if (this._colors?.feet) {
@@ -186,7 +337,7 @@ export class Tee {
   }
 
   private _renderEyes(eye: EyeType, angle: number | null, bodyOffsetY: number) {
-    const key = TeePartType.Eye + eye + (angle ?? 'front') + '_' + bodyOffsetY
+    const key = TeePartType.Eye + eye + (angle ?? 'front') + '_' + bodyOffsetY + '_' + this._canvasSize
     if (!this._cache[key]) {
       const scale = 0.8
       const xBase = 19.2
@@ -234,10 +385,10 @@ export class Tee {
     scale = 1,
     rotation = 0,
   ) {
-    const { canvas, ctx } = Canvas.create(this._size)
+    const { canvas, ctx } = Canvas.create(this._canvasSize)
 
-    const offsetX = normalOffsetX * this._scale
-    const offsetY = normalOffsetY * this._scale
+    const offsetX = normalOffsetX * this._scale + this._padding
+    const offsetY = normalOffsetY * this._scale + this._padding
 
     const normalize = 1 / (part.width / normalSize)
     const width = part.width * normalize * scale * this._scale
