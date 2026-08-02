@@ -7,7 +7,11 @@ const maxCode = 0xFFFFFF
 const defaultColor = 127
 const maxColor = 255
 
-const code = ref(defaultCode)
+const props = defineProps<{
+  code?: number
+}>()
+
+const code = ref(props.code ?? defaultCode)
 const h = ref(defaultColor)
 const s = ref(defaultColor)
 const l = ref(defaultColor)
@@ -16,6 +20,14 @@ const colorPreview = useTemplateRef('colorPreview')
 const emit = defineEmits<{
   input: [value: TeeColor]
 }>()
+
+watch(
+  () => props.code,
+  (value) => {
+    if (value === undefined || value === code.value) return
+    code.value = value
+  },
+)
 
 watch(code, (value) => {
   code.value = clampCodeValue(value)

@@ -8,6 +8,12 @@ export interface ITeeColors {
   feet: TeeColor
 }
 
+export interface IColorPreset {
+  useCustomColors: boolean
+  body?: TeeColor
+  feet?: TeeColor
+}
+
 export interface ITeeOptions {
   eyes?: EyeType
   face?: FaceType
