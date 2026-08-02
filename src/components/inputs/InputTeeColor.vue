@@ -9,6 +9,7 @@ const maxColor = 255
 
 const props = defineProps<{
   code?: number
+  disabled?: boolean
 }>()
 
 const code = ref(props.code ?? defaultCode)
@@ -100,28 +101,56 @@ onMounted(updateColorFromValues)
     <div class="row mb-2">
         <div class="input-group">
           <span class="input-group-text">Code:</span>
-          <input type="number" min="0" :max="maxCode" v-model="code" class="form-control" />
+          <input
+            type="number"
+            min="0"
+            :max="maxCode"
+            v-model="code"
+            :disabled="disabled"
+            class="form-control"
+          />
         </div>
       </div>
 
       <div class="row mb-2">
         <div class="input-group">
           <span class="input-group-text">Hue:</span>
-          <input type="number" min="0" :max="maxColor" v-model="h" class="form-control" />
+          <input
+            type="number"
+            min="0"
+            :max="maxColor"
+            v-model="h"
+            :disabled="disabled"
+            class="form-control"
+          />
         </div>
       </div>
 
       <div class="row mb-2">
         <div class="input-group">
           <span class="input-group-text">Sat:</span>
-          <input type="number" min="0" :max="maxColor" v-model="s" class="form-control" />
+          <input
+            type="number"
+            min="0"
+            :max="maxColor"
+            v-model="s"
+            :disabled="disabled"
+            class="form-control"
+          />
         </div>
       </div>
 
       <div class="row mb-2">
         <div class="input-group">
           <span class="input-group-text">Lht:</span>
-          <input type="number" min="0" :max="maxColor" v-model="l" class="form-control" />
+          <input
+            type="number"
+            min="0"
+            :max="maxColor"
+            v-model="l"
+            :disabled="disabled"
+            class="form-control"
+          />
         </div>
       </div>
     </div>

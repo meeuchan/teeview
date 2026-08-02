@@ -62,11 +62,19 @@ function buildOptions() {
     <div class="row">
       <div class="col-sm mb-2 mb-md-0">
         <label class="form-label">Body:</label>
-        <InputTeeColor :code="bodyColor?.code" @input="((bodyColor = $event), buildOptions())" />
+        <InputTeeColor
+          :code="bodyColor?.code"
+          :disabled="!useCustomColors"
+          @input="((bodyColor = $event), buildOptions())"
+        />
       </div>
       <div class="col-sm">
         <label class="form-label">Feet:</label>
-        <InputTeeColor :code="feetColor?.code" @input="((feetColor = $event), buildOptions())" />
+        <InputTeeColor
+          :code="feetColor?.code"
+          :disabled="!useCustomColors"
+          @input="((feetColor = $event), buildOptions())"
+        />
       </div>
     </div>
   </form>
