@@ -46,6 +46,56 @@ export default {
     return resizedCanvas
   },
 
+  cropToContent(canvas: HTMLCanvasElement) {
+    const ctx = canvas.getContext('2d')!
+    const { data } = ctx.getImageData(0, 0, canvas.width, canvas.height)
+
+    let minX = canvas.width
+    let minY = canvas.height
+    let maxX = -1
+    let maxY = -1
+
+    for (let y = 0; y < canvas.height; y++) {
+      for (let x = 0; x < canvas.width; x++) {
+        const alpha = data[(y * canvas.width + x) * 4 + 3]
+        if (alpha === 0) continue
+
+        if (x < minX) minX = x
+        if (x > maxX) maxX = x
+        if (y < minY) minY = y
+        if (y > maxY) maxY = y
+      }
+    }
+
+    if (maxX < minX || maxY < minY) return this.clone(canvas)
+
+    const width = maxX - minX + 1
+    const height = maxY - minY + 1
+
+    const { canvas: croppedCanvas, ctx: croppedCtx } = this.create(width, height)
+    croppedCtx.drawImage(canvas, minX, minY, width, height, 0, 0, width, height)
+
+    return croppedCanvas
+  },
+
+  resizeContain(canvas: HTMLCanvasElement, width: number, height?: number) {
+    height = height || width
+
+    const scale = Math.min(width / canvas.width, height / canvas.height)
+    const drawWidth = canvas.width * scale
+    const drawHeight = canvas.height * scale
+    const offsetX = (width - drawWidth) / 2
+    const offsetY = (height - drawHeight) / 2
+
+    const { canvas: resizedCanvas, ctx } = this.create(width, height)
+
+    ctx.imageSmoothingEnabled = true
+    ctx.imageSmoothingQuality = 'high'
+    ctx.drawImage(canvas, offsetX, offsetY, drawWidth, drawHeight)
+
+    return resizedCanvas
+  },
+
   flip(canvas: HTMLCanvasElement) {
     const { canvas: flippedCanvas, ctx } = this.create(canvas.width)
 
