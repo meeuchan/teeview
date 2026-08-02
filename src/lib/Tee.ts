@@ -1,6 +1,6 @@
 import Canvas from './Canvas'
 import { RgbColor, type TeeColor } from './Color'
-import { EyeType, TeePartType } from './Parts'
+import { EyeType, PoseType, TeePartType } from './Parts'
 import type { Skin } from './Skin'
 
 export interface ITeeColors {
@@ -17,8 +17,21 @@ export interface IColorPreset {
 export interface ITeeOptions {
   eyes?: EyeType
   eyeAngle?: number | null
+  pose?: PoseType
   noFace?: boolean
   noFeet?: boolean
+}
+
+interface IFootFrame {
+  x: number
+  y: number
+  rotation: number
+}
+
+interface IPoseFrame {
+  bodyOffsetY: number
+  backFoot: IFootFrame
+  frontFoot: IFootFrame
 }
 
 export class Tee {
@@ -36,98 +49,148 @@ export class Tee {
   }
 
   public render(options?: ITeeOptions) {
+    const eyeAngle = options?.eyeAngle === undefined ? 0 : options.eyeAngle
+    const poseFrame = this._getPoseFrame(options?.pose ?? PoseType.Idle, eyeAngle)
+
     return Canvas.merge(
-      options?.noFeet ? null : this._renderBackFootShadow(),
-      this._renderBodyShadow(),
-      options?.noFeet ? null : this._renderFrontFootShadow(),
-      options?.noFeet ? null : this._renderBackFoot(),
-      this._renderBody(),
+      options?.noFeet ? null : this._renderBackFootShadow(poseFrame),
+      this._renderBodyShadow(poseFrame),
+      options?.noFeet ? null : this._renderFrontFootShadow(poseFrame),
+      options?.noFeet ? null : this._renderBackFoot(poseFrame),
+      this._renderBody(poseFrame),
       options?.noFace
         ? null
-        : this._renderEyes(
-            options?.eyes ?? EyeType.Normal,
-            options?.eyeAngle === undefined ? 0 : options.eyeAngle,
-          ),
-      options?.noFeet ? null : this._renderFrontFoot(),
+        : this._renderEyes(options?.eyes ?? EyeType.Normal, eyeAngle, poseFrame.bodyOffsetY),
+      options?.noFeet ? null : this._renderFrontFoot(poseFrame),
     )
   }
 
-  private _renderBody() {
-    if (!this._cache[TeePartType.Body]) {
-      let body = this._renderPart(this._skin.getBody(), 96, 0, 0, 2 / 3)
+  private _getPoseFrame(pose: PoseType, eyeAngle: number | null): IPoseFrame {
+    switch (pose) {
+      case PoseType.InAir:
+        return {
+          bodyOffsetY: 0,
+          backFoot: { x: -3, y: 30, rotation: -36 },
+          frontFoot: { x: 3, y: 30, rotation: -36 },
+        }
+      case PoseType.Sit: {
+        const sitLeft = eyeAngle !== null && eyeAngle >= 90 && eyeAngle <= 270
+        return sitLeft
+          ? {
+              bodyOffsetY: 3,
+              backFoot: { x: -12, y: 30, rotation: 36 },
+              frontFoot: { x: -8, y: 30, rotation: 36 },
+            }
+          : {
+              bodyOffsetY: 3,
+              backFoot: { x: 12, y: 30, rotation: -36 },
+              frontFoot: { x: 8, y: 30, rotation: -36 },
+            }
+      }
+      case PoseType.Idle:
+      default:
+        return {
+          bodyOffsetY: 0,
+          backFoot: { x: -7, y: 30, rotation: 0 },
+          frontFoot: { x: 7, y: 30, rotation: 0 },
+        }
+    }
+  }
+
+  private _renderBody(poseFrame: IPoseFrame) {
+    const key = TeePartType.Body + poseFrame.bodyOffsetY
+    if (!this._cache[key]) {
+      let body = this._renderPart(this._skin.getBody(), 96, 0, poseFrame.bodyOffsetY, 2 / 3)
       if (this._colors?.body) {
         const color = RgbColor.fromTeeColor(this._colors.body)
         body = Canvas.tint(body, color, true)
       }
-      this._cache[TeePartType.Body] = body
+      this._cache[key] = body
     }
-    return this._cache[TeePartType.Body]
+    return this._cache[key]
   }
 
-  private _renderBodyShadow() {
-    if (!this._cache[TeePartType.BodyShadow]) {
-      let bodyShadow = this._renderPart(this._skin.getBodyShadow(), 96, 0, 0, 2 / 3)
+  private _renderBodyShadow(poseFrame: IPoseFrame) {
+    const key = TeePartType.BodyShadow + poseFrame.bodyOffsetY
+    if (!this._cache[key]) {
+      let bodyShadow = this._renderPart(
+        this._skin.getBodyShadow(),
+        96,
+        0,
+        poseFrame.bodyOffsetY,
+        2 / 3,
+      )
       if (this._colors?.body) {
         const color = RgbColor.fromTeeColor(this._colors.body)
         bodyShadow = Canvas.tint(bodyShadow, color)
       }
-      this._cache[TeePartType.BodyShadow] = bodyShadow
+      this._cache[key] = bodyShadow
     }
-    return this._cache[TeePartType.BodyShadow]
+    return this._cache[key]
   }
 
-  private _renderFrontFoot() {
-    if (!this._cache[TeePartType.FrontFoot]) {
-      let frontFoot = this._renderPart(this._skin.getFoot(), 64, 7, 30)
+  private _renderFrontFoot(poseFrame: IPoseFrame) {
+    const { x, y, rotation } = poseFrame.frontFoot
+    const key = `${TeePartType.FrontFoot}${x}_${y}_${rotation}`
+    if (!this._cache[key]) {
+      let frontFoot = this._renderPart(this._skin.getFoot(), 64, x, y, 1, rotation)
       if (this._colors?.feet) {
         const color = RgbColor.fromTeeColor(this._colors.feet)
         frontFoot = Canvas.tint(frontFoot, color)
       }
-      this._cache[TeePartType.FrontFoot] = frontFoot
+      this._cache[key] = frontFoot
     }
-    return this._cache[TeePartType.FrontFoot]
+    return this._cache[key]
   }
 
-  private _renderFrontFootShadow() {
-    if (!this._cache[TeePartType.FrontFootShadow]) {
-      let frontFootShadow = this._renderPart(this._skin.getFootShadow(), 64, 7, 30)
+  private _renderFrontFootShadow(poseFrame: IPoseFrame) {
+    const { x, y, rotation } = poseFrame.frontFoot
+    const key = `${TeePartType.FrontFootShadow}${x}_${y}_${rotation}`
+    if (!this._cache[key]) {
+      let frontFootShadow = this._renderPart(this._skin.getFootShadow(), 64, x, y, 1, rotation)
       if (this._colors?.feet) {
         const color = RgbColor.fromTeeColor(this._colors.feet)
         frontFootShadow = Canvas.tint(frontFootShadow, color)
       }
-      this._cache[TeePartType.FrontFootShadow] = frontFootShadow
+      this._cache[key] = frontFootShadow
     }
-    return this._cache[TeePartType.FrontFootShadow]
+    return this._cache[key]
   }
 
-  private _renderBackFoot() {
-    if (!this._cache[TeePartType.BackFoot]) {
-      let backFoot = this._renderPart(this._skin.getFoot(), 64, -7, 30)
+  private _renderBackFoot(poseFrame: IPoseFrame) {
+    const { x, y, rotation } = poseFrame.backFoot
+    const key = `${TeePartType.BackFoot}${x}_${y}_${rotation}`
+    if (!this._cache[key]) {
+      let backFoot = this._renderPart(this._skin.getFoot(), 64, x, y, 1, rotation)
       if (this._colors?.feet) {
         const color = RgbColor.fromTeeColor(this._colors.feet)
         backFoot = Canvas.tint(backFoot, color)
       }
-      this._cache[TeePartType.BackFoot] = backFoot
+      this._cache[key] = backFoot
     }
-    return this._cache[TeePartType.BackFoot]
+    return this._cache[key]
   }
 
-  private _renderBackFootShadow() {
-    if (!this._cache[TeePartType.BackFootShadow]) {
-      let backFootShadow = this._renderPart(this._skin.getFootShadow(), 64, -7, 30)
+  private _renderBackFootShadow(poseFrame: IPoseFrame) {
+    const { x, y, rotation } = poseFrame.backFoot
+    const key = `${TeePartType.BackFootShadow}${x}_${y}_${rotation}`
+    if (!this._cache[key]) {
+      let backFootShadow = this._renderPart(this._skin.getFootShadow(), 64, x, y, 1, rotation)
       if (this._colors?.feet) {
         const color = RgbColor.fromTeeColor(this._colors.feet)
         backFootShadow = Canvas.tint(backFootShadow, color)
       }
-      this._cache[TeePartType.BackFootShadow] = backFootShadow
+      this._cache[key] = backFootShadow
     }
-    return this._cache[TeePartType.BackFootShadow]
+    return this._cache[key]
   }
 
-  private _renderEyes(eye: EyeType, angle: number | null) {
-    const key = TeePartType.Eye + eye + (angle ?? 'front')
+  private _renderEyes(eye: EyeType, angle: number | null, bodyOffsetY: number) {
+    const key = TeePartType.Eye + eye + (angle ?? 'front') + '_' + bodyOffsetY
     if (!this._cache[key]) {
       const scale = 0.8
+      const xBase = 19.2
+      const yBase = 19.2 + bodyOffsetY
       let leftOffsetX: number
       let rightOffsetX: number
       let offsetY: number
@@ -135,16 +198,16 @@ export class Tee {
       if (angle === null) {
         leftOffsetX = 15.04
         rightOffsetX = 23.36
-        offsetY = 16
+        offsetY = 16 + bodyOffsetY
       } else {
         const rad = (angle * Math.PI) / 180
         const dirX = Math.cos(rad)
         const dirY = Math.sin(rad)
         const separation = (0.075 - 0.01 * Math.abs(dirX)) * 64
         const offsetX = dirX * 0.125 * 64
-        leftOffsetX = 19.2 - separation + offsetX
-        rightOffsetX = 19.2 + separation + offsetX
-        offsetY = 19.2 + (-0.05 + dirY * 0.1) * 64
+        leftOffsetX = xBase - separation + offsetX
+        rightOffsetX = xBase + separation + offsetX
+        offsetY = yBase + (-0.05 + dirY * 0.1) * 64
       }
 
       const leftEye = this._skin.getEye(eye)
@@ -169,6 +232,7 @@ export class Tee {
     normalOffsetX: number,
     normalOffsetY: number,
     scale = 1,
+    rotation = 0,
   ) {
     const { canvas, ctx } = Canvas.create(this._size)
 
@@ -178,6 +242,14 @@ export class Tee {
     const normalize = 1 / (part.width / normalSize)
     const width = part.width * normalize * scale * this._scale
     const height = part.height * normalize * scale * this._scale
+
+    if (rotation) {
+      const pivotX = offsetX + width / 2
+      const pivotY = offsetY + height / 2
+      ctx.translate(pivotX, pivotY)
+      ctx.rotate((rotation * Math.PI) / 180)
+      ctx.translate(-pivotX, -pivotY)
+    }
 
     ctx.drawImage(part, 0, 0, part.width, part.height, offsetX, offsetY, width, height)
 

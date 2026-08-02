@@ -37,3 +37,15 @@ export const EyeTypeLabels: Record<EyeType, string> = {
   [EyeType.Sad]: 'Sad',
   [EyeType.Blink]: 'Blink',
 }
+
+export enum PoseType {
+  Idle,
+  InAir,
+  Sit,
+}
+
+export const PoseTypeLabels: Record<PoseType, string> = {
+  [PoseType.Idle]: 'Idle',
+  [PoseType.InAir]: 'In Air',
+  [PoseType.Sit]: 'Sit',
+}
