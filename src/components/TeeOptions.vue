@@ -5,7 +5,7 @@ import Tabs from './tabs/Tabs.vue'
 import TeeOptionsSkin from './TeeOptionsSkin.vue'
 import type { IRendererOptions } from '@/lib/Renderer'
 import TeeOptionsPart, { type IPartsOptions } from './TeeOptionsPart.vue'
-import TeeOptionsColor from './TeeOptionsColor.vue'
+import TeeOptionsColors from './TeeOptionsColors.vue'
 import type { IColorPreset, ITeeColors } from '@/lib/Tee'
 import TeeOptionsDownload from './TeeOptionsDownload.vue'
 
@@ -39,16 +39,10 @@ function buildOptions() {
     <div class="card">
       <Tabs>
         <Tab title="Skin" class="card-body">
-          <TeeOptionsSkin
-            @change="((skin = $event), buildOptions())"
-            @colors="colorPreset = $event"
-          />
+          <TeeOptionsSkin @change="((skin = $event), buildOptions())" @colors="colorPreset = $event" />
         </Tab>
-        <Tab title="Color" :disabled="!skin" class="card-body">
-          <TeeOptionsColor
-            :preset="colorPreset"
-            @change="((colorOptions = $event), buildOptions())"
-          />
+        <Tab title="Colors" :disabled="!skin" class="card-body">
+          <TeeOptionsColors :preset="colorPreset" @change="((colorOptions = $event), buildOptions())" />
         </Tab>
         <Tab title="Parts" :disabled="!skin" class="card-body">
           <TeeOptionsPart @change="((partOptions = $event), buildOptions())" />

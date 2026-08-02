@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import InputSkinFile from './inputs/InputSkinFile.vue'
-import LinkTo from './LinkTo.vue'
 import InputSkinUrl from './inputs/InputSkinUrl.vue'
 import InputSkinCommand from './inputs/InputSkinCommand.vue'
 import type { IColorPreset } from '@/lib/Tee'
