@@ -1,4 +1,9 @@
 const SVG_RASTER_WIDTH = 1024
+const SKIN_SOURCE_URLS = [
+  'https://skins.ddstats.tw/',
+  'https://ddnet.org/skins/skin/community/',
+  'https://ddnet.org/skins/skin/',
+]
 
 const loadImage = (src: string, crossOrigin?: string) =>
   new Promise<HTMLImageElement>((resolve, reject) => {
@@ -43,13 +48,16 @@ export const getRasterizedSvgImage = async (source: File | string, width = SVG_R
 
 export const getImageFromUrl = (url: string) => loadImage(url, 'Anonymous')
 
-export const getSkinImageByNameOrUrl = async (nameOrUrl: string) => {
-  let url = nameOrUrl
-  if (!url.startsWith('http')) {
-    url = 'https://ddnet.org/skins/skin/' + url + '.png'
+const isUrl = (value: string) => {
+  try {
+    new URL(value)
+    return true
+  } catch {
+    return false
   }
+}
 
-  const img = url.endsWith('.svg') ? await getRasterizedSvgImage(url) : await getImageFromUrl(url)
+const finalizeSkinImage = (img: HTMLImageElement, url: string) => {
   img.setAttribute('name', url)
   img.setAttribute('lastModified', 'x')
 
@@ -58,6 +66,29 @@ export const getSkinImageByNameOrUrl = async (nameOrUrl: string) => {
   }
 
   return img
+}
+
+export const getSkinImageByNameOrUrl = async (nameOrUrl: string) => {
+  if (!isUrl(nameOrUrl)) {
+    for (const sourceUrl of SKIN_SOURCE_URLS) {
+      const url = sourceUrl + nameOrUrl + '.png'
+
+      let img: HTMLImageElement
+      try {
+        img = await getImageFromUrl(url)
+      } catch {
+        continue
+      }
+
+      return finalizeSkinImage(img, url)
+    }
+
+    throw new Error('Could not find skin with this name in the databases.')
+  }
+
+  const url = nameOrUrl
+  const img = url.endsWith('.svg') ? await getRasterizedSvgImage(url) : await getImageFromUrl(url)
+  return finalizeSkinImage(img, url)
 }
 
 export const getGameSkinImageFromUrl = async (url: string) => {
