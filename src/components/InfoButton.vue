@@ -45,9 +45,9 @@ function closeModal() {
         <div class="modal-body">
           <h5>Info</h5>
           <p class="mb-1">
-            <LinkTo href="https://github.com/meeuchan/teeview" class="d-flex align-items-center"
-              ><GitHubIcon class="me-2" />GitHub</LinkTo
-            >
+            <LinkTo href="https://github.com/meeuchan/teeview" class="d-flex align-items-center">
+              <GitHubIcon class="me-2" />GitHub
+            </LinkTo>
           </p>
           <p class="mb-2">
             Developer:
@@ -58,6 +58,20 @@ function closeModal() {
             realized it would be a fun tool to release to the DDNet community for everyone to use.
             If you find any bugs, please report it to the GitHub page. Enjoy!
           </p>
+          <h5>Skin Databases</h5>
+          <p class="mb-0">When fetching skins by name, TeeView will try to fetch from the following sources (in order):
+          </p>
+          <ol>
+            <li>
+              <a href="https://skins.ddstats.tw/">https://skins.ddstats.tw/</a>
+            </li>
+            <li>
+              <a href="https://ddnet.org/skins/skin/community/">https://ddnet.org/skins/skin/community/</a>
+            </li>
+            <li>
+              <a href="https://ddnet.org/skins/skin/">https://ddnet.org/skins/skin/</a>
+            </li>
+          </ol>
           <h5>Credits</h5>
           <ul class="mb-0">
             <li>
