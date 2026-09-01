@@ -4,12 +4,13 @@ import type { IRendererOptions } from '@/lib/Renderer'
 import { getEnumNumericKeys } from '@/utils'
 import { ref } from 'vue'
 
-export type IPoseOptions = Pick<IRendererOptions, 'pose' | 'noFeet'>
+export type IPoseOptions = Pick<IRendererOptions, 'pose' | 'noFeet' | 'ddFat'>
 
 const poses = getEnumNumericKeys(PoseType)
 
 const selectedPose = ref(poses[0])
 const noFeet = ref(false)
+const ddFat = ref(false)
 
 const emit = defineEmits<{
   change: [value: IPoseOptions]
@@ -24,6 +25,7 @@ function buildOptions() {
   const options: IPoseOptions = {
     pose: selectedPose.value,
     noFeet: noFeet.value,
+    ddFat: ddFat.value,
   }
 
   emit('change', options)
@@ -48,7 +50,13 @@ function buildOptions() {
           </select>
         </div>
       </div>
-      <div class="col"></div>
+      <div class="col">
+        <div class="form-check mb-3">
+          <input id="ddFatCheckbox" type="checkbox" v-model="ddFat" @change="buildOptions()"
+            class="form-check-input" />
+          <label class="form-check-label" for="ddFatCheckbox">DDFat</label>
+        </div>
+      </div>
     </div>
   </form>
 </template>

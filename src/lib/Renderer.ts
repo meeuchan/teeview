@@ -53,6 +53,7 @@ export class Renderer {
       pose: options.pose,
       noFace: options.noFace,
       noFeet: options.noFeet,
+      ddFat: options.ddFat,
       weapon: options.weapon,
       gameSkin: this._gameSkin ?? undefined,
     })
