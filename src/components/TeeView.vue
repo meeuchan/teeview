@@ -2,6 +2,7 @@
 import { computed, onMounted, ref, useTemplateRef, watch } from 'vue'
 import { Renderer, type IRendererOptions } from '@/lib/Renderer'
 import { WeaponType } from '@/lib/Parts'
+import { DDFAT_BODY_SCALE } from '@/lib/Tee'
 
 const props = defineProps<{
   options?: IRendererOptions
@@ -20,7 +21,10 @@ const hasWeapon = computed(
     props.options.weapon !== WeaponType.None &&
     !!props.options?.gameSkin,
 )
-const previewSize = computed(() => (hasWeapon.value ? 480 : 192))
+const previewSize = computed(() => {
+  if (hasWeapon.value) return 480
+  return props.options?.ddFat ? 192 * DDFAT_BODY_SCALE : 192
+})
 
 onMounted(() => {
   if (props.options) renderTee(props.options)
