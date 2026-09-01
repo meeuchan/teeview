@@ -21,6 +21,7 @@ export interface ITeeOptions {
   pose?: PoseType
   noFace?: boolean
   noFeet?: boolean
+  ddFat?: boolean
   weapon?: WeaponType
   gameSkin?: GameSkin
 }
@@ -44,6 +45,9 @@ const HAMMER_OFFSET = { x: 4, y: -20 }
 const HAMMER_ATTACH_ANGLE = -0.1 * 360
 const HAMMER_AFK_ROTATION = { left: 100, right: 500 }
 const NINJA_ATTACH_ANGLE = -0.25 * 360
+
+export const DDFAT_BODY_SCALE = 1.3
+const DDFAT_BODY_OFFSET = (-(DDFAT_BODY_SCALE - 1) * 64) / 2
 
 interface IFootFrame {
   x: number
@@ -90,9 +94,11 @@ export class Tee {
     const poseFrame = this._getPoseFrame(pose, eyeAngle)
     const weapon = options?.weapon ?? WeaponType.None
     const hasWeapon = weapon !== WeaponType.None && !!options?.gameSkin
+    const ddFat = options?.ddFat ?? false
 
-    this._canvasSize = hasWeapon ? this._size * 2.5 : this._size
-    this._padding = hasWeapon ? this._size * 0.75 : 0
+    const fatPadding = ddFat ? (this._size * (DDFAT_BODY_SCALE - 1)) / 2 : 0
+    this._canvasSize = hasWeapon ? this._size * 2.5 : this._size + fatPadding * 2
+    this._padding = hasWeapon ? this._size * 0.75 : fatPadding
 
     const attachment = hasWeapon ? this._getWeaponAttachment(weapon, eyeAngle, pose) : null
 
@@ -100,10 +106,10 @@ export class Tee {
       attachment ? this._renderWeapon(weapon, options!.gameSkin!, attachment) : null,
       attachment ? this._renderHand(weapon, attachment) : null,
       options?.noFeet ? null : this._renderBackFootShadow(poseFrame),
-      this._renderBodyShadow(poseFrame),
+      this._renderBodyShadow(poseFrame, ddFat),
       options?.noFeet ? null : this._renderFrontFootShadow(poseFrame),
       options?.noFeet ? null : this._renderBackFoot(poseFrame),
-      this._renderBody(poseFrame),
+      this._renderBody(poseFrame, ddFat),
       options?.noFace
         ? null
         : this._renderEyes(options?.eyes ?? EyeType.Normal, eyeAngle, poseFrame.bodyOffsetY),
@@ -245,24 +251,28 @@ export class Tee {
     }
   }
 
-  private _renderBody(poseFrame: IPoseFrame) {
-    const key = TeePartType.Body + poseFrame.bodyOffsetY + '_' + this._canvasSize
+  private _renderBody(poseFrame: IPoseFrame, ddFat: boolean) {
+    const scale = ddFat ? (2 / 3) * DDFAT_BODY_SCALE : 2 / 3
+    const offset = ddFat ? DDFAT_BODY_OFFSET : 0
+    const key = TeePartType.Body + poseFrame.bodyOffsetY + (ddFat ? 'fat' : '') + '_' + this._canvasSize
     if (!this._cache[key]) {
       const body = this._getTintedPart('bodyTint', this._skin.getBody(), this._colors?.body, true)
-      this._cache[key] = this._renderPart(body, 96, 0, poseFrame.bodyOffsetY, 2 / 3)
+      this._cache[key] = this._renderPart(body, 96, offset, poseFrame.bodyOffsetY + offset, scale)
     }
     return this._cache[key]
   }
 
-  private _renderBodyShadow(poseFrame: IPoseFrame) {
-    const key = TeePartType.BodyShadow + poseFrame.bodyOffsetY + '_' + this._canvasSize
+  private _renderBodyShadow(poseFrame: IPoseFrame, ddFat: boolean) {
+    const scale = ddFat ? (2 / 3) * DDFAT_BODY_SCALE : 2 / 3
+    const offset = ddFat ? DDFAT_BODY_OFFSET : 0
+    const key = TeePartType.BodyShadow + poseFrame.bodyOffsetY + (ddFat ? 'fat' : '') + '_' + this._canvasSize
     if (!this._cache[key]) {
       const bodyShadow = this._getTintedPart(
         'bodyShadowTint',
         this._skin.getBodyShadow(),
         this._colors?.body,
       )
-      this._cache[key] = this._renderPart(bodyShadow, 96, 0, poseFrame.bodyOffsetY, 2 / 3)
+      this._cache[key] = this._renderPart(bodyShadow, 96, offset, poseFrame.bodyOffsetY + offset, scale)
     }
     return this._cache[key]
   }
