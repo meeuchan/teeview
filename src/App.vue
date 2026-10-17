@@ -5,6 +5,8 @@ import InfoButton from './components/InfoButton.vue'
 import TeeOptions from './components/TeeOptions.vue'
 import TeeView from './components/TeeView.vue'
 import type { IRendererOptions } from './lib/Renderer'
+import KofiIcon from './components/icons/KofiIcon.vue'
+import GitHubIcon from './components/icons/GitHubIcon.vue'
 
 const options = ref<IRendererOptions>()
 const result = ref<HTMLCanvasElement>()
@@ -19,6 +21,12 @@ const result = ref<HTMLCanvasElement>()
         </div>
         <div class="col d-flex justify-content-end align-items-center">
           <DarkModeButton />
+          <a href="https://github.com/meeuchan/teeview" target="_blank" class="btn btn-success btn-sm ms-2">
+            <GitHubIcon />
+          </a>
+          <a href="https://ko-fi.com/meeuchan" target="_blank" class="btn btn-danger btn-sm ms-2">
+            <KofiIcon />
+          </a>
           <InfoButton />
         </div>
       </div>

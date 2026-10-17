@@ -72,7 +72,7 @@ function closeModal() {
               <a href="https://ddnet.org/skins/skin/">https://ddnet.org/skins/skin/</a>
             </li>
           </ol>
-          <h5>Credits</h5>
+          <h5>Special Thanks</h5>
           <ul class="mb-0">
             <li>
               <TeeFace name="Skeith" />
