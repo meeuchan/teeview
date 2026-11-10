@@ -13,7 +13,7 @@ const result = ref<HTMLCanvasElement>()
 </script>
 
 <template>
-  <div class="app-container">
+  <div class="app">
     <div class="container">
       <div class="row justify-content-between mb-1">
         <div class="col">
@@ -45,3 +45,12 @@ const result = ref<HTMLCanvasElement>()
     </div>
   </div>
 </template>
+
+<style scoped lang="scss">
+.app {
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 16px;
+}
+</style>
