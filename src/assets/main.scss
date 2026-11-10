@@ -1,5 +1,17 @@
-$headings-font-weight: 700;
-$font-family-base: 'Nunito', sans-serif;
+@import 'reset';
+@import 'vars';
+
+:root {
+  --color-bg: #{$color-bg};
+  --color-text: #{$color-text};
+}
+
+body {
+  font-family: $font;
+
+  background-color: var(--color-bg);
+  color: var(--color-text);
+}
 
 .nav-tabs {
   padding: 0.5em 0.5em 0;
