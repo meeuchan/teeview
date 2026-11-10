@@ -5,6 +5,11 @@
   --color-bg: #{$color-bg};
   --color-text: #{$color-text};
   --color-subtle: #{$color-subtle};
+  --color-border: #{$color-border};
+
+  --border-radius: 16px;
+
+  --shadow: 0 3px 6px rgba(0, 0, 0, 0.1), 0 3px 6px rgba(0, 0, 0, 0.17);
 }
 
 body {
@@ -19,4 +24,22 @@ body {
 
 h1 {
   font-weight: $font-weight-title;
+}
+
+.card {
+  border: 2px solid var(--color-border);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+}
+
+.checker {
+  --checker-color: rgba(255, 255, 255, 0.05);
+
+  background-image: conic-gradient(
+    var(--checker-color) 25%,
+    transparent 0 50%,
+    var(--checker-color) 0 75%,
+    transparent 0
+  );
+  background-size: 12px 12px;
 }

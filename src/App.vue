@@ -27,19 +27,14 @@ const result = ref<HTMLCanvasElement>()
       </div>
     </header>
 
-    <div class="container">
-      <div class="row mb-2">
-        <div class="col">
-          <TeeView :options="options" @change="result = $event" />
-        </div>
+    <main class="main">
+      <div>
+        <TeeView :options="options" @change="result = $event" />
       </div>
-
-      <div class="row">
-        <div class="col">
-          <TeeOptions :result="result" @change="options = $event" />
-        </div>
-      </div>
-    </div>
+      <aside>
+        <TeeOptions :result="result" @change="options = $event" />
+      </aside>
+    </main>
   </div>
 </template>
 
@@ -56,11 +51,16 @@ const result = ref<HTMLCanvasElement>()
   align-items: center;
   justify-content: space-between;
 
-  margin: 16px 0;
+  padding: 16px 0;
 }
 
 .header-links {
   display: flex;
   gap: 12px;
+}
+
+.main {
+  display: grid;
+  gap: 16px;
 }
 </style>
