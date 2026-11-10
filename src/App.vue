@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import DarkModeButton from './components/DarkModeButton.vue'
 import InfoButton from './components/InfoButton.vue'
 import TeeOptions from './components/TeeOptions.vue'
 import TeeView from './components/TeeView.vue'
@@ -20,7 +19,6 @@ const result = ref<HTMLCanvasElement>()
           <h1>TeeView</h1>
         </div>
         <div class="col d-flex justify-content-end align-items-center">
-          <DarkModeButton />
           <a href="https://github.com/meeuchan/teeview" target="_blank" class="btn btn-success btn-sm ms-2">
             <GitHubIcon />
           </a>
