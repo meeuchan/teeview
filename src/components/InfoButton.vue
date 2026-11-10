@@ -1,29 +1,28 @@
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, ref } from 'vue'
+import { onBeforeUnmount, onMounted } from 'vue'
 import InfoIcon from './icons/InfoIcon.vue'
-import * as bootstrap from 'bootstrap'
 import TeeFace from './TeeFace.vue'
 import LinkTo from './LinkTo.vue'
 import GitHubIcon from './icons/GitHubIcon.vue'
 import { version } from '../../package.json'
 
-const helpModal = ref<bootstrap.Modal | null>()
+// const helpModal = ref<bootstrap.Modal | null>()
 
 onMounted(() => {
-  helpModal.value = new bootstrap.Modal('#helpModal')
-  helpModal.value.hide()
+  // helpModal.value = new bootstrap.Modal('#helpModal')
+  // helpModal.value.hide()
 })
 
 onBeforeUnmount(() => {
-  helpModal.value?.dispose()
+  // helpModal.value?.dispose()
 })
 
 function openModal() {
-  helpModal.value?.show()
+  // helpModal.value?.show()
 }
 
 function closeModal() {
-  helpModal.value?.hide()
+  // helpModal.value?.hide()
 }
 </script>
 
