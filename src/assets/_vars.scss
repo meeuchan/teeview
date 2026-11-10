@@ -1,4 +1,8 @@
+@use 'sass:color';
+
 $font: 'Nunito', ui-rounded, system-ui, sans-serif;
+$font-weight-title: 900;
 
 $color-bg: #181b1a;
 $color-text: #e3fcf0;
+$color-subtle: color.change($color-text, $alpha: 0.625);

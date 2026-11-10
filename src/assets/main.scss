@@ -4,10 +4,12 @@
 :root {
   --color-bg: #{$color-bg};
   --color-text: #{$color-text};
+  --color-subtle: #{$color-subtle};
 }
 
 body {
   font-family: $font;
+  font-size: 16px;
 
   background-color: var(--color-bg);
   color: var(--color-text);
@@ -15,11 +17,6 @@ body {
   min-height: 100vh;
 }
 
-.nav-tabs {
-  padding: 0.5em 0.5em 0;
-  background-color: rgba(0, 0, 0, 0.03);
-}
-
-.bi {
-  margin-bottom: 2px;
+h1 {
+  font-weight: $font-weight-title;
 }

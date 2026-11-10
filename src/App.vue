@@ -6,6 +6,7 @@ import TeeView from './components/TeeView.vue'
 import type { IRendererOptions } from './lib/Renderer'
 import KofiIcon from './components/icons/KofiIcon.vue'
 import GitHubIcon from './components/icons/GitHubIcon.vue'
+import Button from './components/ui/Button.vue'
 
 const options = ref<IRendererOptions>()
 const result = ref<HTMLCanvasElement>()
@@ -13,22 +14,20 @@ const result = ref<HTMLCanvasElement>()
 
 <template>
   <div class="app">
-    <div class="container">
-      <div class="row justify-content-between mb-1">
-        <div class="col">
-          <h1>TeeView</h1>
-        </div>
-        <div class="col d-flex justify-content-end align-items-center">
-          <a href="https://github.com/meeuchan/teeview" target="_blank" class="btn btn-success btn-sm ms-2">
-            <GitHubIcon />
-          </a>
-          <a href="https://ko-fi.com/meeuchan" target="_blank" class="btn btn-danger btn-sm ms-2">
-            <KofiIcon />
-          </a>
-          <InfoButton />
-        </div>
+    <header class="header">
+      <h1>TeeView</h1>
+      <div class="header-links">
+        <Button href="https://github.com/meeuchan/teeview" variant="ghost" size="icon" title="Open GitHub Repo">
+          <GitHubIcon />
+        </Button>
+        <Button href="https://ko-fi.com/meeuchan" variant="ghost" size="icon" title="Support Me on Ko-fi">
+          <KofiIcon />
+        </Button>
+        <InfoButton />
       </div>
+    </header>
 
+    <div class="container">
       <div class="row mb-2">
         <div class="col">
           <TeeView :options="options" @change="result = $event" />
@@ -44,11 +43,24 @@ const result = ref<HTMLCanvasElement>()
   </div>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 .app {
   width: 100%;
   max-width: 720px;
   margin: 0 auto;
-  padding: 16px;
+  padding: 0 16px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin: 16px 0;
+}
+
+.header-links {
+  display: flex;
+  gap: 12px;
 }
 </style>

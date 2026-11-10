@@ -5,6 +5,7 @@ import TeeFace from './TeeFace.vue'
 import LinkTo from './LinkTo.vue'
 import GitHubIcon from './icons/GitHubIcon.vue'
 import { version } from '../../package.json'
+import Button from './ui/Button.vue'
 
 // const helpModal = ref<bootstrap.Modal | null>()
 
@@ -27,11 +28,11 @@ function closeModal() {
 </script>
 
 <template>
-  <button type="button" @click="openModal()" class="btn btn-primary btn-sm ms-2">
+  <Button type="button" @click="openModal()" variant="ghost" size="icon" title="Info">
     <InfoIcon />
-  </button>
+  </Button>
 
-  <div class="modal fade" id="helpModal" tabindex="-1">
+  <!-- <div class="modal fade" id="helpModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
       <div class="modal-content">
         <div class="modal-header">
@@ -89,5 +90,5 @@ function closeModal() {
         </div>
       </div>
     </div>
-  </div>
+  </div> -->
 </template>
