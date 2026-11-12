@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, provide, ref, type RendererElement, type RendererNode, type VNode } from 'vue'
+import { computed, onBeforeUnmount, onMounted, provide, ref, type RendererElement, type RendererNode, type VNode } from 'vue'
 import { ActiveTabKey } from './TabSymbols'
 
 type ITabNode = VNode<RendererNode, RendererElement, { title: string; disabled: string }>
@@ -11,9 +11,34 @@ const tabs = computed(() => slots.default())
 const activeTabKey = ref(tabs.value[0].props?.title || '')
 provide(ActiveTabKey, activeTabKey)
 
-function setTabActive(tab: ITabNode) {
+const listEl = ref<HTMLElement>()
+const fadeStart = ref(false)
+const fadeEnd = ref(false)
+let resizeObserver: ResizeObserver | undefined
+
+function updateFade() {
+  const el = listEl.value
+  if (!el) return
+  const maxScroll = el.scrollWidth - el.clientWidth
+  fadeStart.value = el.scrollLeft > 1
+  fadeEnd.value = el.scrollLeft < maxScroll - 1
+}
+
+onMounted(() => {
+  const el = listEl.value
+  if (!el) return
+  updateFade()
+  resizeObserver = new ResizeObserver(updateFade)
+  resizeObserver.observe(el)
+  for (const child of el.children) resizeObserver.observe(child)
+})
+
+onBeforeUnmount(() => resizeObserver?.disconnect())
+
+function setTabActive(tab: ITabNode, event: MouseEvent) {
   if (isTabDisabled(tab)) return
-  activeTabKey.value = tab.props?.title || ''
+  activeTabKey.value = tab.props?.title || '';
+  (event.currentTarget as HTMLElement).scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' })
 }
 
 function isTabActive(tab: ITabNode) {
@@ -26,24 +51,70 @@ function isTabDisabled(tab: ITabNode) {
 </script>
 
 <template>
-  <div class="tabs-list" role="tablist">
-    <button v-for="tab in tabs" :key="tab.props?.title" type="button" role="tab" class="tab"
-      :aria-selected="isTabActive(tab)" :disabled="isTabDisabled(tab)" @click="setTabActive(tab)">
-      {{ tab.props?.title }}
-    </button>
+  <div class="tabs-bar">
+    <div ref="listEl" class="tabs-list" :class="{ 'fade-start': fadeStart, 'fade-end': fadeEnd }" role="tablist"
+      @scroll.passive="updateFade">
+      <button v-for="tab in tabs" :key="tab.props?.title" type="button" role="tab" class="tab"
+        :aria-selected="isTabActive(tab)" :disabled="isTabDisabled(tab)" @click="setTabActive(tab, $event)">
+        {{ tab.props?.title }}
+      </button>
+    </div>
   </div>
 
   <slot></slot>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
+@property --tabs-fade-start {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: 0px;
+}
+
+@property --tabs-fade-end {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: 0px;
+}
+
+$fade-size: 50px;
+
+.tabs-bar {
+  border-bottom: var(--border);
+}
+
 .tabs-list {
+  --tabs-fade-start: 0px;
+  --tabs-fade-end: 0px;
+
   display: flex;
   gap: 4px;
   padding: 8px;
-  border-bottom: var(--border);
   overflow-x: auto;
   scrollbar-width: none;
+
+  $mask: linear-gradient(to right,
+      transparent,
+      #000 var(--tabs-fade-start),
+      #000 calc(100% - var(--tabs-fade-end)),
+      transparent);
+  -webkit-mask-image: $mask;
+  mask-image: $mask;
+  transition:
+    --tabs-fade-start 0.2s,
+    --tabs-fade-end 0.2s;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  &.fade-start {
+    --tabs-fade-start: #{$fade-size};
+  }
+
+  &.fade-end {
+    --tabs-fade-end: #{$fade-size};
+  }
 }
 
 .tab {

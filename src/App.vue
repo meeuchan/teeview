@@ -61,6 +61,7 @@ const result = ref<HTMLCanvasElement>()
 
 .main {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 16px;
 }
 </style>
