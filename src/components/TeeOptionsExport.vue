@@ -1,63 +1,118 @@
 <script setup lang="ts">
 import Canvas from '@/lib/Canvas'
-import DownloadIcon from './icons/DownloadIcon.vue'
+import { computed } from 'vue';
+import { EMOJI_SIZE, type ExportMode } from '@/lib/Export.ts';
+import ExportButton from './ExportButton.vue';
 
 const props = defineProps<{
   result?: HTMLCanvasElement
 }>()
 
-function downloadCanvas(canvas: HTMLCanvasElement) {
-  const data = canvas.toDataURL('image/png').replace('image/png', 'image/octet-stream')
-  const a = document.createElement('a')
-  a.href = data
-  a.download = 'tee.png'
-  a.click()
-}
+const cropSize = computed(() => {
+  if (!props.result) return undefined
+  const cropped = Canvas.cropToContent(props.result)
+  return `${cropped.width}×${cropped.height}`
+})
 
-function downloadFullSize() {
-  if (!props.result) return
-  downloadCanvas(props.result)
-}
-
-function downloadEmojiSize() {
-  if (!props.result) return
-  const resizedCanvas = Canvas.resizeSmooth(props.result, 128, 128)
-  downloadCanvas(resizedCanvas)
-}
-
-function downloadSmartCrop() {
-  if (!props.result) return
-  const croppedCanvas = Canvas.cropToContent(props.result)
-  downloadCanvas(croppedCanvas)
-}
-
-function downloadSmartCropEmojiSize() {
-  if (!props.result) return
-  const croppedCanvas = Canvas.cropToContent(props.result)
-  const resizedCanvas = Canvas.resizeContain(croppedCanvas, 128, 128)
-  downloadCanvas(resizedCanvas)
-}
+const exports = computed<{ mode: ExportMode; title: string; size?: string; description: string }[]>(
+  () => [
+    {
+      mode: 'full',
+      title: 'Full size',
+      size: props.result ? `${props.result.width}×${props.result.height}` : undefined,
+      description: 'The raw render at the skin resolution.',
+    },
+    {
+      mode: 'emoji',
+      title: 'Emoji',
+      size: `${EMOJI_SIZE}×${EMOJI_SIZE}`,
+      description: 'Scaled down for Discord & chat emotes.',
+    },
+    {
+      mode: 'crop',
+      title: 'Smart crop',
+      size: cropSize.value,
+      description: 'Trims away the empty space around the tee.',
+    },
+    {
+      mode: 'cropEmoji',
+      title: 'Smart crop emoji',
+      size: `${EMOJI_SIZE}×${EMOJI_SIZE}`,
+      description: 'Cropped, then fit into an emoji square.',
+    },
+  ],
+)
 </script>
 
 <template>
-  <div class="container-fluid g-0">
-    <div class="row">
-      <div class="col d-flex flex-column gap-2">
-        <button class="btn btn-primary" @click="downloadFullSize()">
-          <DownloadIcon class="me-1" /> Full Size ({{ props.result?.width }}x{{
-            props.result?.height
-          }})
-        </button>
-        <button class="btn btn-primary" @click="downloadEmojiSize()">
-          <DownloadIcon class="me-1" /> Emoji Size (128x128)
-        </button>
-        <button class="btn btn-primary" @click="downloadSmartCrop()">
-          <DownloadIcon class="me-1" /> Smart Crop
-        </button>
-        <button class="btn btn-primary" @click="downloadSmartCropEmojiSize()">
-          <DownloadIcon class="me-1" /> Smart Crop + Emoji Size (128x128)
-        </button>
+  <ul class="exports">
+    <li v-for="item in exports" :key="item.mode" class="export">
+      <div class="export-text">
+        <div class="export-title">
+          {{ item.title }}
+          <span v-if="item.size" class="export-size">{{ item.size }}</span>
+        </div>
+        <p class="export-description">{{ item.description }}</p>
       </div>
-    </div>
-  </div>
+      <div class="export-actions">
+        <ExportButton :source="props.result" :mode="item.mode" action="copy" />
+        <ExportButton :source="props.result" :mode="item.mode" action="download" primary />
+      </div>
+    </li>
+  </ul>
 </template>
+
+<style lang="scss" scoped>
+.exports {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.export {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 16px;
+  border-radius: 16px;
+  background: var(--color-surface);
+}
+
+.export-text {
+  flex: 1 1 160px;
+  min-width: 0;
+}
+
+.export-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 800;
+}
+
+.export-size {
+  padding: 2px 4px;
+  border-radius: 4px;
+  background: var(--color-pill);
+  color: var(--color-subtle);
+  font-size: 0.625rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.export-description {
+  font-size: 0.75rem;
+  color: var(--color-subtle);
+}
+
+.export-actions {
+  display: flex;
+  gap: 8px;
+}
+</style>
