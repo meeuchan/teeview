@@ -2,11 +2,14 @@
 import { PoseType, PoseTypeLabels } from '@/lib/Parts'
 import type { IRendererOptions } from '@/lib/Renderer'
 import { getEnumNumericKeys } from '@/utils'
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
+import Select from './ui/Select.vue'
+import Toggle from './ui/Toggle.vue'
 
 export type IPoseOptions = Pick<IRendererOptions, 'pose' | 'noFeet' | 'ddFat'>
 
 const poses = getEnumNumericKeys(PoseType)
+const poseOptions = poses.map((pose) => ({ label: PoseTypeLabels[pose as PoseType], value: pose }))
 
 const selectedPose = ref(poses[0])
 const noFeet = ref(false)
@@ -16,10 +19,11 @@ const emit = defineEmits<{
   change: [value: IPoseOptions]
 }>()
 
-function onNoFeetChange() {
-  if (noFeet.value) selectedPose.value = poses[0]
-  buildOptions()
-}
+watch(noFeet, (value) => {
+  if (value) selectedPose.value = poses[0]
+})
+
+watch([selectedPose, noFeet, ddFat], () => buildOptions())
 
 function buildOptions() {
   const options: IPoseOptions = {
@@ -33,30 +37,30 @@ function buildOptions() {
 </script>
 
 <template>
-  <form class="container-fluid g-0" @submit.prevent>
-    <div class="row">
-      <div class="col">
-        <div class="form-check mb-3">
-          <input id="noFeetCheckbox" type="checkbox" v-model="noFeet" @change="onNoFeetChange()"
-            class="form-check-input" />
-          <label class="form-check-label" for="noFeetCheckbox">No Feet</label>
-        </div>
-        <div class="mb-3">
-          <label for="poseInput" class="form-label">Pose:</label>
-          <select id="poseInput" v-model="selectedPose" @change="buildOptions()" :disabled="noFeet" class="form-select">
-            <option v-for="pose in poses" :key="pose" :value="pose">
-              {{ PoseTypeLabels[pose as PoseType] }}
-            </option>
-          </select>
-        </div>
-      </div>
-      <div class="col">
-        <div class="form-check mb-3">
-          <input id="ddFatCheckbox" type="checkbox" v-model="ddFat" @change="buildOptions()"
-            class="form-check-input" />
-          <label class="form-check-label" for="ddFatCheckbox">DDFat</label>
-        </div>
-      </div>
+  <form class="container" @submit.prevent>
+    <div class="pose-modes">
+      <Toggle v-model="noFeet" label="No feet" />
+      <Toggle v-model="ddFat" label="DDFat" />
+    </div>
+    <div class="field">
+      <span class="field-label">Pose</span>
+      <Select v-model="selectedPose" :options="poseOptions" :disabled="noFeet" label="Pose" />
     </div>
   </form>
 </template>
+
+<style lang="scss" scoped>
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.pose-modes {
+  display: grid;
+  gap: 16px;
+  @media (min-width: 720px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+</style>
