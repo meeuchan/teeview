@@ -1,16 +1,28 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import InputSkinFile from './inputs/InputSkinFile.vue'
 import InputGameSkinUrl from './inputs/InputGameSkinUrl.vue'
 import { WeaponType, WeaponTypeLabels } from '@/lib/Parts'
 import type { IRendererOptions } from '@/lib/Renderer'
 import { getEnumNumericKeys, getImageFromUrl } from '@/utils'
+import SkinPreview from './SkinPreview.vue'
+import Select from './ui/Select.vue'
 
 export type IWeaponOptions = Pick<IRendererOptions, 'gameSkin' | 'weapon'>
 
 type GameSkinInputMode = 'default' | 'file' | 'url'
 
+const modes: { label: string; value: GameSkinInputMode }[] = [
+  { label: 'Default', value: 'default' },
+  { label: 'File', value: 'file' },
+  { label: 'URL', value: 'url' },
+]
+
 const weapons = getEnumNumericKeys(WeaponType)
+const weaponOptions = weapons.map((weapon) => ({
+  label: WeaponTypeLabels[weapon as WeaponType],
+  value: weapon,
+}))
 
 const mode = ref<GameSkinInputMode>('default')
 const gameSkin = ref<HTMLImageElement>()
@@ -30,9 +42,11 @@ async function loadDefault() {
   setGameSkin(img)
 }
 
-function onModeChange() {
-  if (mode.value === 'default') loadDefault()
-}
+watch(mode, (value) => {
+  if (value === 'default') loadDefault()
+})
+
+watch(selectedWeapon, () => buildOptions())
 
 function buildOptions() {
   const options: IWeaponOptions = {
@@ -48,50 +62,49 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="container-fluid g-0">
-    <div class="row mb-3">
-      <div class="col-sm mb-3 mb-md-0">
-        <div class="d-flex align-items-center mb-3">
-          <span class="me-2">From:</span>
-          <div class="btn-group btn-group-sm" role="group" aria-label="Gameskin input mode">
-            <input id="gameSkinModeDefault" type="radio" class="btn-check" value="default" v-model="mode"
-              @change="onModeChange()" autocomplete="off" />
-            <label class="btn btn-outline-primary" for="gameSkinModeDefault">Default</label>
+  <div class="panel">
+    <div class="field">
+      <span class="field-label">Weapon</span>
+      <Select v-model="selectedWeapon" :options="weaponOptions" label="Weapon" />
+    </div>
 
-            <input id="gameSkinModeFile" type="radio" class="btn-check" value="file" v-model="mode"
-              autocomplete="off" />
-            <label class="btn btn-outline-primary" for="gameSkinModeFile">File</label>
-
-            <input id="gameSkinModeUrl" type="radio" class="btn-check" value="url" v-model="mode" autocomplete="off" />
-            <label class="btn btn-outline-primary" for="gameSkinModeUrl">URL</label>
-          </div>
+    <div class="container">
+      <div class="skin-loader-container">
+        <div class="field">
+          <span class="field-label">Load Gameskin From</span>
+          <Select v-model="mode" :options="modes" label="Gameskin source" />
         </div>
-
-        <div class="gameSkinInput mb-3">
-          <InputSkinFile v-if="mode === 'file'" @input="setGameSkin($event)" />
-          <InputGameSkinUrl v-if="mode === 'url'" @input="setGameSkin($event)" />
-        </div>
-
-        <label for="weaponInput" class="form-label">Weapon:</label>
-        <select id="weaponInput" v-model="selectedWeapon" @change="buildOptions()" class="form-select">
-          <option v-for="weapon in weapons" :key="weapon" :value="weapon">
-            {{ WeaponTypeLabels[weapon as WeaponType] }}
-          </option>
-        </select>
+        <InputSkinFile v-if="mode === 'file'" @input="setGameSkin($event)" />
+        <InputGameSkinUrl v-if="mode === 'url'" @input="setGameSkin($event)" />
       </div>
-      <div class="col-sm text-center text-md-end">
-        <img id="gameSkinPreview" :src="gameSkin?.src" v-if="gameSkin?.src" class="img-thumbnail" />
+
+      <div>
+        <SkinPreview :image="gameSkin" label="Current skin" />
       </div>
     </div>
   </div>
 </template>
 
 <style lang="scss" scoped>
-.gameSkinInput {
-  min-height: 38px;
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
-#gameSkinPreview {
-  max-height: 128px;
+.container {
+  display: grid;
+  gap: 16px;
+  align-items: start;
+
+  @media (min-width: 720px) {
+    grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+  }
+}
+
+.skin-loader-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 </style>

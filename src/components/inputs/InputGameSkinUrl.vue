@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { ref, useTemplateRef } from 'vue'
+import { ref } from 'vue'
 import { getGameSkinImageFromUrl } from '@/utils'
+import ApplyButton from '../ApplyButton.vue'
 
-const input = useTemplateRef('fileInput')
-const hasInputChanged = ref(false)
+const value = ref('')
+const loading = ref(false)
 const inputError = ref<string | null>()
 
 const emit = defineEmits<{
@@ -13,42 +14,51 @@ const emit = defineEmits<{
 async function getGameSkin() {
   clearError()
 
-  const url = input.value?.value
+  const url = value.value.trim()
   if (!url) {
     setError('Please input a URL.')
     return
   }
 
+  loading.value = true
   try {
     const img = await getGameSkinImageFromUrl(url)
-    hasInputChanged.value = true
     emit('input', img)
   } catch (e) {
     setError(e instanceof Error ? e.message : 'Invalid URL.')
+  } finally {
+    loading.value = false
   }
 }
 
 function setError(error: string) {
-  hasInputChanged.value = true
-  input.value?.setCustomValidity(error)
   inputError.value = error
 }
 
 function clearError() {
-  hasInputChanged.value = false
-  input.value?.setCustomValidity('')
   inputError.value = null
 }
 </script>
 
 <template>
-  <form @submit.prevent="" novalidate class="needs-validation position-relative"
-    :class="[hasInputChanged && 'was-validated']">
-    <div class="input-group has-validation">
-      <span class="input-group-text" id="basic-addon1">URL</span>
-      <input ref="fileInput" type="text" @change="getGameSkin()" class="form-control me-1" required
-        placeholder="https://.../game.png" />
-      <div class="invalid-tooltip">{{ inputError }}</div>
+  <form class="field" novalidate @submit.prevent="getGameSkin()">
+    <label for="gameSkinUrlInput" class="field-label">Game skin URL</label>
+    <div class="row">
+      <input
+        id="gameSkinUrlInput"
+        v-model="value"
+        type="text"
+        class="input"
+        placeholder="https://…/game.png"
+        autocomplete="off"
+        spellcheck="false"
+        :aria-invalid="!!inputError || undefined"
+      />
+    </div>
+    <div class="field-footer">
+      <p v-if="inputError" class="field-error" role="alert">{{ inputError }}</p>
+      <p v-else class="field-hint">Must be a PNG or SVG and at least 256×128.</p>
+      <ApplyButton label="Load tee skin" :loading="loading" />
     </div>
   </form>
 </template>
