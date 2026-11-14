@@ -32,6 +32,42 @@ h1 {
   font-weight: $font-weight-title;
 }
 
+.input {
+  width: 100%;
+  font-size: 0.8rem;
+  line-height: 1.6;
+  min-height: 40px;
+  padding: 0.5rem 0.75rem;
+  border: var(--border);
+  border-radius: 12px;
+  background: var(--color-pill);
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s;
+
+  &::placeholder {
+    color: var(--color-subtle);
+  }
+
+  &:focus {
+    outline: none;
+    border-color: var(--color-primary);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  &[aria-invalid='true'] {
+    border-color: var(--color-danger);
+  }
+}
+
+textarea.input {
+  resize: vertical;
+}
+
 .card {
   border: var(--border);
   border-radius: var(--border-radius);
@@ -55,10 +91,36 @@ h1 {
   background-size: 12px 12px;
 }
 
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.field-label {
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.075em;
+  text-transform: uppercase;
+  color: var(--color-subtle);
+}
+
+.field-hint {
+  font-size: 0.8rem;
+  color: var(--color-subtle);
+}
+
 .field-error {
   font-size: 0.8rem;
   font-weight: 600;
   color: var(--color-danger);
+}
+
+.field-footer {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
 }
 
 .screen-reader-only {

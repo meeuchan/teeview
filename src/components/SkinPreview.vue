@@ -9,7 +9,12 @@ const props = defineProps<{
 const name = computed(() => {
   const raw = props.image?.getAttribute('name')
   if (!raw) return 'default'
-  return raw.split('/').pop()?.replace(/\.(png|svg)$/i, '') || raw
+  return (
+    raw
+      .split('/')
+      .pop()
+      ?.replace(/\.(png|svg)$/i, '') || raw
+  )
 })
 </script>
 
@@ -20,7 +25,9 @@ const name = computed(() => {
     </div>
     <figcaption>
       <span class="caption-name">{{ name }}</span>
-      <span v-if="props.image" class="caption-size">{{ props.image.naturalWidth }}×{{ props.image.naturalHeight }}</span>
+      <span v-if="props.image" class="caption-size"
+        >{{ props.image.naturalWidth }}×{{ props.image.naturalHeight }}</span
+      >
     </figcaption>
   </figure>
 </template>

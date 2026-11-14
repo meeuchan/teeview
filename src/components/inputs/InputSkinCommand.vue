@@ -1,11 +1,13 @@
 <script setup lang="ts">
-import { ref, useTemplateRef } from 'vue'
+import { nextTick, ref } from 'vue'
 import { getSkinImageByNameOrUrl, parseSkinCommand } from '@/utils'
 import { TeeColor } from '@/lib/Color'
 import type { IColorPreset } from '@/lib/Tee'
+import ApplyButton from '../ApplyButton.vue'
 
-const input = useTemplateRef('commandInput')
-const hasInputChanged = ref(false)
+const value = ref('')
+const loading = ref(false)
+const applied = ref(false)
 const inputError = ref<string | null>()
 
 const emit = defineEmits<{
@@ -16,8 +18,8 @@ const emit = defineEmits<{
 async function applyCommand() {
   clearError()
 
-  const command = input.value?.value
-  if (!command?.trim()) {
+  const command = value.value
+  if (!command.trim()) {
     setError('Please input something.')
     return
   }
@@ -28,9 +30,9 @@ async function applyCommand() {
     return
   }
 
+  loading.value = true
   try {
     const img = await getSkinImageByNameOrUrl(parsed.skinName)
-    hasInputChanged.value = true
     emit('input', img)
 
     const useCustomColors =
@@ -43,39 +45,49 @@ async function applyCommand() {
       body: useCustomColors ? TeeColor.fromCode(parsed.bodyColorCode) : undefined,
       feet: useCustomColors ? TeeColor.fromCode(parsed.feetColorCode) : undefined,
     })
+    applied.value = true
   } catch (e) {
     setError(e instanceof Error ? e.message : 'Invalid command.')
+  } finally {
+    loading.value = false
   }
 }
 
+async function onPaste() {
+  await nextTick()
+  applyCommand()
+}
+
 function setError(error: string) {
-  hasInputChanged.value = true
-  input.value?.setCustomValidity(error)
+  applied.value = false
   inputError.value = error
 }
 
 function clearError() {
-  hasInputChanged.value = false
-  input.value?.setCustomValidity('')
+  applied.value = false
   inputError.value = null
 }
 </script>
 
 <template>
-  <form
-    @submit.prevent=""
-    novalidate
-    class="needs-validation position-relative"
-    :class="[hasInputChanged && 'was-validated']"
-  >
+  <form class="field" novalidate @submit.prevent="applyCommand()">
+    <label for="skinCommandInput" class="field-label">Console command</label>
     <textarea
-      ref="commandInput"
-      @change="applyCommand()"
-      class="form-control"
-      rows="2"
-      placeholder="Paste the command from DDStats.tw here"
-      required
+      id="skinCommandInput"
+      v-model="value"
+      class="input"
+      rows="3"
+      placeholder='player_skin "default";&#10;player_use_custom_color 1;&#10;…'
+      spellcheck="false"
+      :aria-invalid="!!inputError || undefined"
+      @paste="onPaste()"
+      @keydown.ctrl.enter.prevent="applyCommand()"
+      @keydown.meta.enter.prevent="applyCommand()"
     ></textarea>
-    <div class="invalid-tooltip">{{ inputError }}</div>
+    <div class="field-footer">
+      <p v-if="inputError" class="field-error" role="alert">{{ inputError }}</p>
+      <p v-else class="field-hint">Paste the command from DDStats.tw.</p>
+      <ApplyButton label="Load tee skin" :loading="loading" />
+    </div>
   </form>
 </template>
