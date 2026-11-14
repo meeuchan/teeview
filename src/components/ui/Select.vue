@@ -5,13 +5,18 @@ const props = defineProps<{
   options: { label: string; value: T }[]
   label: string
   disabled?: boolean
+  maxColumns?: number
 }>()
+
+const columnLimit = computed(() =>
+  Math.max(1, Math.min(props.options.length, props.maxColumns ?? Infinity)),
+)
 
 const model = defineModel<T>({ required: true })
 
 const groupEl = ref<HTMLElement>()
 
-const columns = ref(props.options.length)
+const columns = ref(columnLimit.value)
 
 const firstOptionSpan = computed(() => {
   const cols = columns.value
@@ -42,7 +47,7 @@ function layout() {
   const gap = parseFloat(groupStyle.columnGap) || 0
 
   const fit = Math.floor((available + gap) / (widestOption + gap))
-  columns.value = Math.min(Math.max(fit, 1), props.options.length)
+  columns.value = Math.min(Math.max(fit, 1), columnLimit.value)
 }
 
 let observer: ResizeObserver | undefined
@@ -57,7 +62,7 @@ onMounted(() => {
 onBeforeUnmount(() => observer?.disconnect())
 
 watch(
-  () => props.options.map((option) => option.label).join('\n'),
+  () => [props.options.map((option) => option.label).join('\n'), props.maxColumns],
   () => nextTick(layout),
 )
 
