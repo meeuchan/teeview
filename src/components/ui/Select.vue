@@ -118,7 +118,8 @@ function onKeydown(event: KeyboardEvent, index: number) {
   padding: 4px;
   gap: 4px;
   border-radius: 12px;
-  background: var(--color-surface);
+  background: var(--color-pill);
+  border: var(--border);
 
   &.is-disabled {
     opacity: 0.5;
