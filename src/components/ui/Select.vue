@@ -58,7 +58,7 @@ function onKeydown(event: KeyboardEvent, index: number) {
 .select-group {
   padding: 4px;
   gap: 4px;
-  border-radius: 16px;
+  border-radius: 12px;
   background: var(--color-surface);
   border: var(--border);
 

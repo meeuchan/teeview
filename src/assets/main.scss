@@ -4,6 +4,7 @@
 :root {
   --color-bg: #{$color-bg};
   --color-primary: #{$color-primary};
+  --color-danger: #{$color-danger};
   --color-text: #{$color-text};
   --color-subtle: #{$color-subtle};
   --color-border: #{$color-border};
@@ -52,4 +53,19 @@ h1 {
     transparent 0
   );
   background-size: 12px 12px;
+}
+
+.field-error {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-danger);
+}
+
+.screen-reader-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
 }

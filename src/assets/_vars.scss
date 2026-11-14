@@ -5,9 +5,10 @@ $font-weight-title: 900;
 
 $color-bg: #181b1a;
 $color-primary: #84deb3;
+$color-danger: #ff8358;
 $color-text: #e3fcf0;
 $color-subtle: color.change($color-text, $alpha: 0.625);
 $color-border: #2e3d36;
 $color-card: color.change($color-border, $alpha: 0.5);
-$color-surface: #2e3d36;
+$color-surface: color.change($color-border, $alpha: 0.375);
 $color-pill: #181b1a;
