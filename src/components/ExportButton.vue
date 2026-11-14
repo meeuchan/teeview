@@ -1,11 +1,17 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, ref } from 'vue'
 import Button from './ui/Button.vue'
-import { canCopyImage, copyCanvas, downloadCanvas, getExportCanvas, type ExportMode } from '@/lib/Export'
-import DownloadIcon from './icons/DownloadIcon.vue';
-import CopyIcon from './icons/CopyIcon.vue';
-import CheckIcon from './icons/CheckIcon.vue';
-import ErrorIcon from './icons/ErrorIcon.vue';
+import {
+  canCopyImage,
+  copyCanvas,
+  downloadCanvas,
+  getExportCanvas,
+  type ExportMode,
+} from '@/lib/Export'
+import DownloadIcon from './icons/DownloadIcon.vue'
+import CopyIcon from './icons/CopyIcon.vue'
+import CheckIcon from './icons/CheckIcon.vue'
+import ErrorIcon from './icons/ErrorIcon.vue'
 
 const props = defineProps<{
   source?: HTMLCanvasElement
@@ -56,10 +62,14 @@ onBeforeUnmount(() => clearTimeout(resetTimer))
 </script>
 
 <template>
-  <Button v-if="props.action === 'download' || canCopyImage" :variant="props.primary ? 'primary' : 'secondary'"
-    size="sm" :disabled="!props.source || status === 'busy'"
+  <Button
+    v-if="props.action === 'download' || canCopyImage"
+    :variant="props.primary ? 'primary' : 'secondary'"
+    :disabled="!props.source || status === 'busy'"
     :title="props.action === 'copy' ? 'Copy image to clipboard' : 'Download PNG'"
-    :class="{ 'is-done': status === 'done' }" @click="run()">
+    :class="{ 'is-done': status === 'done' }"
+    @click="run()"
+  >
     <CheckIcon v-if="status === 'done'" />
     <ErrorIcon v-else-if="status === 'error'" />
     <template v-else>

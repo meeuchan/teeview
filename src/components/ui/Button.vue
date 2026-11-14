@@ -2,22 +2,33 @@
 const props = withDefaults(
   defineProps<{
     variant?: 'primary' | 'secondary' | 'ghost'
-    size?: 'sm' | 'md' | 'icon'
+    size?: 'normal' | 'icon'
     href?: string
     type?: 'button' | 'submit'
     disabled?: boolean
   }>(),
-  { variant: 'secondary', size: 'md', type: 'button' },
+  { variant: 'secondary', size: 'normal', type: 'button' },
 )
 </script>
 
 <template>
-  <a v-if="props.href" :href="props.href" target="_blank" rel="noopener" class="btn"
-    :class="[`btn-${props.variant}`, `btn-${props.size}`]">
+  <a
+    v-if="props.href"
+    :href="props.href"
+    target="_blank"
+    rel="noopener"
+    class="btn"
+    :class="[`btn-${props.variant}`, `btn-${props.size}`]"
+  >
     <slot></slot>
   </a>
-  <button v-else :type="props.type" :disabled="props.disabled" class="btn"
-    :class="[`btn-${props.variant}`, `btn-${props.size}`]">
+  <button
+    v-else
+    :type="props.type"
+    :disabled="props.disabled"
+    class="btn"
+    :class="[`btn-${props.variant}`, `btn-${props.size}`]"
+  >
     <slot></slot>
   </button>
 </template>
@@ -36,11 +47,16 @@ const props = withDefaults(
   user-select: none;
 
   transition: all 0.2s;
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
 }
 
-.btn-sm {
+.btn-normal {
   height: 32px;
-  padding: 0 0.75rem;
+  padding: 0 12px;
   font-size: 0.875rem;
 
   :slotted(svg) {
@@ -61,10 +77,11 @@ const props = withDefaults(
 
 .btn-primary,
 .btn-secondary {
-  --btn-shadow-color: oklch(from var(--btn-color-base) calc(l - .125) c h);
+  --btn-shadow-color: oklch(from var(--btn-color-base) calc(l - 0.125) c h);
 
   background: var(--btn-color-base);
   color: var(--btn-color-text);
+  margin-bottom: 2.5px;
 
   border-radius: 8px;
   font-weight: 700;
@@ -73,7 +90,7 @@ const props = withDefaults(
     0 2.5px 0 var(--btn-shadow-color),
     0 0 0 -2.5px var(--btn-shadow-color);
 
-  &:hover {
+  &:hover:not(:disabled) {
     transform: translateY(-2px) scale(1.05);
     box-shadow:
       0 5px 0 var(--btn-shadow-color),
