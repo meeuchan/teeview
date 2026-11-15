@@ -36,7 +36,7 @@ const name = computed(() => {
 .preview {
   margin: 0;
   border: var(--border);
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   overflow: hidden;
 }
 
@@ -45,7 +45,7 @@ const name = computed(() => {
   align-items: center;
   justify-content: center;
   aspect-ratio: 2;
-  padding: 8px;
+  padding: var(--space-2);
 
   img {
     max-width: 100%;
@@ -57,11 +57,11 @@ figcaption {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 8px;
-  padding: 8px 12px;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
   border-top: var(--border);
   background: var(--color-surface);
-  font-size: 0.8rem;
+  font-size: var(--font-size-sm);
 }
 
 .caption-name {
@@ -69,16 +69,16 @@ figcaption {
   text-overflow: ellipsis;
   white-space: nowrap;
   color: var(--color-text);
-  font-weight: 700;
+  font-weight: var(--font-weight-bold);
 }
 
 .caption-size {
-  padding: 2px 4px;
-  border-radius: 4px;
+  padding: 2px var(--space-1);
+  border-radius: var(--radius-sm);
   background: var(--color-pill);
   color: var(--color-subtle);
-  font-size: 0.625rem;
-  font-weight: 700;
+  font-size: var(--font-size-2xs);
+  font-weight: var(--font-weight-bold);
   font-variant-numeric: tabular-nums;
 }
 </style>

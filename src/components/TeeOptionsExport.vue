@@ -70,7 +70,7 @@ const exports = computed<{ mode: ExportMode; title: string; size?: string; descr
 
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--space-2);
 }
 
 .export {
@@ -78,41 +78,41 @@ const exports = computed<{ mode: ExportMode; title: string; size?: string; descr
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: 8px;
-  padding: 16px;
-  border-radius: 16px;
+  gap: var(--space-2);
+  padding: var(--space-4);
+  border-radius: var(--radius-xl);
   background: var(--color-surface);
 }
 
 .export-text {
-  flex: 1 1 160px;
+  flex: 1 1 10rem;
   min-width: 0;
 }
 
 .export-title {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  font-weight: 800;
+  gap: var(--space-2);
+  font-weight: var(--font-weight-extrabold);
 }
 
 .export-size {
-  padding: 2px 4px;
-  border-radius: 4px;
+  padding: 2px var(--space-1);
+  border-radius: var(--radius-sm);
   background: var(--color-pill);
   color: var(--color-subtle);
-  font-size: 0.625rem;
-  font-weight: 700;
+  font-size: var(--font-size-2xs);
+  font-weight: var(--font-weight-bold);
   font-variant-numeric: tabular-nums;
 }
 
 .export-description {
-  font-size: 0.75rem;
+  font-size: var(--font-size-xs);
   color: var(--color-subtle);
 }
 
 .export-actions {
   display: flex;
-  gap: 8px;
+  gap: var(--space-2);
 }
 </style>

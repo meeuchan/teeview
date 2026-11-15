@@ -8,7 +8,7 @@ const props = defineProps<{
 
 <template>
   <LinkTo :href="`https://ddnet.org/players/${props.name}/`"
-    ><img :src="`/${props.name}.png`" class="tee-icon me-1" />{{ props.name }}</LinkTo
+    ><img :src="`/${props.name}.png`" alt="" class="tee-icon" />{{ props.name }}</LinkTo
   >
 </template>
 

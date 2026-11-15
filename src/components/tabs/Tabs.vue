@@ -88,8 +88,8 @@ $fade-size: 50px;
   --tabs-fade-end: 0px;
 
   display: flex;
-  gap: 4px;
-  padding: 8px;
+  gap: var(--space-1);
+  padding: var(--space-2);
   overflow-x: auto;
   scrollbar-width: none;
 
@@ -120,12 +120,12 @@ $fade-size: 50px;
 .tab {
   position: relative;
   flex: 1 0 auto;
-  padding: 0.5rem 0.75rem;
+  padding: var(--space-2) var(--space-3);
   border: 0;
   background: transparent;
   color: var(--color-subtle);
-  font-size: 0.875rem;
-  font-weight: 800;
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-extrabold);
   cursor: pointer;
   transition:
     background-color 0.2s,
@@ -135,10 +135,11 @@ $fade-size: 50px;
     content: '';
     position: absolute;
     left: 50%;
-    bottom: -8px;
+    /* sits on the tabs-bar border, below the tabs-list padding */
+    bottom: calc(-1 * var(--space-2));
     width: 0;
     height: 4px;
-    border-radius: 4px 4px 0 0;
+    border-radius: var(--radius-sm) var(--radius-sm) 0 0;
     background: var(--color-primary);
     transform: translateX(-50%);
     transition: width 0.25s cubic-bezier(0.3, 1.4, 0.5, 1);

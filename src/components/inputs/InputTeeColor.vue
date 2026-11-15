@@ -127,9 +127,9 @@ onMounted(updateColorFromCode)
 <style scoped lang="scss">
 .color {
   margin: 0;
-  padding: 16px;
+  padding: var(--space-4);
   border: none;
-  border-radius: 16px;
+  border-radius: var(--radius-xl);
   background: var(--color-surface);
   transition: opacity 0.2s;
 
@@ -141,60 +141,60 @@ onMounted(updateColorFromCode)
 .color-header {
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-bottom: 8px;
+  gap: var(--space-2);
+  margin-bottom: var(--space-2);
 }
 
 .swatch {
   width: 36px;
   height: 36px;
   flex-shrink: 0;
-  border-radius: 10px;
+  border-radius: var(--radius-lg);
   transition: background-color 0.1s;
 }
 
 .color-label {
-  font-weight: 800;
-  font-size: 1rem;
+  font-weight: var(--font-weight-extrabold);
+  font-size: var(--font-size-base);
 }
 
 .code {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-2);
   margin-left: auto;
 }
 
 .code-label,
 .channel-label {
-  font-size: 0.75rem;
-  font-weight: 800;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-extrabold);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: var(--letter-spacing-caps);
   color: var(--color-subtle);
 }
 
 .code-input {
-  width: 96px;
-  min-height: 32px;
-  padding: 4px 8px;
+  width: 6rem;
+  min-height: var(--control-height);
+  padding: var(--space-1) var(--space-2);
   font-variant-numeric: tabular-nums;
 }
 
 .channel {
   display: grid;
-  grid-template-columns: 48px 1fr 48px;
+  grid-template-columns: 3rem 1fr 3rem;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-2);
 
   & + & {
-    margin-top: 8px;
+    margin-top: var(--space-2);
   }
 }
 
 .channel-input {
-  min-height: 32px;
-  padding: 4px 8px;
+  min-height: var(--control-height);
+  padding: var(--space-1) var(--space-2);
   font-variant-numeric: tabular-nums;
 }
 
@@ -202,7 +202,7 @@ onMounted(updateColorFromCode)
   width: 100%;
   height: 16px;
   margin: 0;
-  border-radius: 999px;
+  border-radius: var(--radius-full);
   background: var(--track);
   appearance: none;
   cursor: pointer;
@@ -214,7 +214,7 @@ onMounted(updateColorFromCode)
   &::-webkit-slider-thumb {
     width: 20px;
     height: 20px;
-    border: 2px solid var(--color-text);
+    border: var(--border-width) solid var(--color-text);
     border-radius: 50%;
     background: transparent;
     appearance: none;
@@ -223,7 +223,7 @@ onMounted(updateColorFromCode)
   &::-moz-range-thumb {
     width: 16px;
     height: 16px;
-    border: 2px solid var(--color-text);
+    border: var(--border-width) solid var(--color-text);
     border-radius: 50%;
     background: transparent;
   }

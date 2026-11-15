@@ -48,9 +48,10 @@ function pointOnCircle(deg: number, r: number) {
   }
 }
 
+// Percentages so the dial can be sized in rem and scale with the user's font size.
 function pointStyle(deg: number, r = radius) {
   const point = pointOnCircle(deg, r)
-  return { left: `${point.x}px`, top: `${point.y}px` }
+  return { left: `${(point.x / dialSize) * 100}%`, top: `${(point.y / dialSize) * 100}%` }
 }
 
 function normalizeAngle(value: number) {
@@ -177,11 +178,19 @@ function updateFromPointer(event: PointerEvent) {
 </template>
 
 <style scoped lang="scss">
+@use 'sass:math';
+
+// Mirrors the constants in the script (in px at a 16px root), converted to rem so the
+// dial grows with the text inside it.
+@function px($value) {
+  @return math.div($value, 16) * 1rem;
+}
+
 .dial {
   position: relative;
-  width: 220px;
-  height: 220px;
-  margin: 16px auto;
+  width: px(220);
+  height: px(220);
+  margin: var(--space-4) auto;
   border-radius: 50%;
   touch-action: none;
   cursor: grab;
@@ -198,11 +207,11 @@ function updateFromPointer(event: PointerEvent) {
 
 .dial-track {
   position: absolute;
-  inset: 30px;
+  inset: px(30);
   border-radius: 50%;
   border: var(--border);
   background: var(--color-pill);
-  mask: radial-gradient(circle, transparent 0 64px, #000 64.5px);
+  mask: radial-gradient(circle, transparent 0 px(64), #000 calc(#{px(64)} + 0.5px));
   pointer-events: none;
 }
 
@@ -211,8 +220,8 @@ function updateFromPointer(event: PointerEvent) {
   top: 50%;
   left: 50%;
   box-sizing: border-box;
-  width: 128px;
-  height: 128px;
+  width: px(128);
+  height: px(128);
   border: var(--border);
   border-radius: 50%;
   transform: translate(-50%, -50%);
@@ -223,7 +232,7 @@ function updateFromPointer(event: PointerEvent) {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 72px;
+  width: px(72);
   height: 2px;
   margin-top: -1px;
   background: linear-gradient(to right, transparent, var(--color-primary));
@@ -263,8 +272,8 @@ function updateFromPointer(event: PointerEvent) {
   display: flex;
   align-items: baseline;
   justify-content: center;
-  font-size: 1.25rem;
-  font-weight: 900;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-black);
   font-variant-numeric: tabular-nums;
 
   input {
@@ -272,7 +281,7 @@ function updateFromPointer(event: PointerEvent) {
     padding: 0;
     border: 0;
     background: transparent;
-    font-weight: 900;
+    font-weight: var(--font-weight-black);
     text-align: center;
     appearance: textfield;
 

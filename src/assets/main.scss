@@ -12,24 +12,50 @@
   --color-surface: #{$color-surface};
   --color-pill: #{$color-pill};
 
-  --border-radius: 16px;
+  --font-size-2xs: #{$font-size-2xs};
+  --font-size-xs: #{$font-size-xs};
+  --font-size-sm: #{$font-size-sm};
+  --font-size-md: #{$font-size-md};
+  --font-size-base: #{$font-size-base};
+  --font-size-lg: #{$font-size-lg};
 
-  --border: 2px solid #{$color-border};
-  --shadow: 0 3px 6px rgba(0, 0, 0, 0.1), 0 3px 6px rgba(0, 0, 0, 0.17);
+  --font-weight-semibold: #{$font-weight-semibold};
+  --font-weight-bold: #{$font-weight-bold};
+  --font-weight-extrabold: #{$font-weight-extrabold};
+  --font-weight-black: #{$font-weight-black};
+
+  --letter-spacing-caps: #{$letter-spacing-caps};
+
+  --space-1: #{$space-1};
+  --space-2: #{$space-2};
+  --space-3: #{$space-3};
+  --space-4: #{$space-4};
+  --space-6: #{$space-6};
+
+  --radius-sm: #{$radius-sm};
+  --radius-md: #{$radius-md};
+  --radius-lg: #{$radius-lg};
+  --radius-xl: #{$radius-xl};
+  --radius-full: #{$radius-full};
+
+  --border-width: #{$border-width};
+  --border: #{$border-width} solid #{$color-border};
+  --shadow: #{$shadow};
+
+  --control-height: #{$control-height};
+  --input-height: #{$input-height};
+  --content-width: #{$content-width};
 }
 
 body {
   font-family: $font;
-  font-size: 16px;
 
   background-color: var(--color-bg);
   color: var(--color-text);
-
-  min-height: 100vh;
 }
 
 h1 {
-  font-weight: $font-weight-title;
+  font-weight: var(--font-weight-black);
 }
 
 input[type='number']::-webkit-outer-spin-button,
@@ -46,12 +72,12 @@ input[type='number'] {
 
 .input {
   width: 100%;
-  font-size: 0.8rem;
+  font-size: var(--font-size-sm);
   line-height: 1.6;
-  min-height: 40px;
-  padding: 0.5rem 0.75rem;
+  min-height: var(--input-height);
+  padding: var(--space-2) var(--space-3);
   border: var(--border);
-  border-radius: 12px;
+  border-radius: var(--radius-lg);
   background: var(--color-pill);
   transition:
     border-color 0.15s,
@@ -82,13 +108,13 @@ textarea.input {
 
 .card {
   border: var(--border);
-  border-radius: var(--border-radius);
+  border-radius: var(--radius-xl);
   box-shadow: var(--shadow);
   background: var(--color-card);
 }
 
 .card-body {
-  padding: 16px;
+  padding: var(--space-4);
 }
 
 .checker {
@@ -106,25 +132,25 @@ textarea.input {
 .field {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--space-2);
 }
 
 .field-label {
-  font-size: 0.75rem;
-  font-weight: 800;
-  letter-spacing: 0.075em;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-extrabold);
+  letter-spacing: var(--letter-spacing-caps);
   text-transform: uppercase;
   color: var(--color-subtle);
 }
 
 .field-hint {
-  font-size: 0.8rem;
+  font-size: var(--font-size-sm);
   color: var(--color-subtle);
 }
 
 .field-error {
-  font-size: 0.8rem;
-  font-weight: 600;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
   color: var(--color-danger);
 }
 
@@ -132,14 +158,17 @@ textarea.input {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 16px;
+  gap: var(--space-4);
 }
 
 .screen-reader-only {
   position: absolute;
   width: 1px;
   height: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
   overflow: hidden;
-  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
   white-space: nowrap;
 }

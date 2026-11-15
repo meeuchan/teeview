@@ -21,9 +21,9 @@ const model = defineModel<boolean>({ required: true })
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
-  padding: 8px 12px;
-  border-radius: 16px;
+  gap: var(--space-4);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-xl);
   background: var(--color-surface);
   cursor: pointer;
 
@@ -34,9 +34,9 @@ const model = defineModel<boolean>({ required: true })
 }
 
 .toggle-label {
-  font-size: 0.75rem;
-  font-weight: 800;
-  letter-spacing: 0.075em;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-extrabold);
+  letter-spacing: var(--letter-spacing-caps);
   text-transform: uppercase;
   color: var(--color-subtle);
 }
@@ -52,7 +52,7 @@ input {
   flex-shrink: 0;
   width: 40px;
   height: 24px;
-  border-radius: 999px;
+  border-radius: var(--radius-full);
   background: var(--color-pill);
   border: var(--border);
   transition: background-color 0.2s;
@@ -78,7 +78,7 @@ input:checked + .track {
 }
 
 input:focus-visible + .track {
-  outline: 2px solid var(--color-primary);
-  outline-offset: 2px;
+  outline: var(--border-width) solid var(--color-primary);
+  outline-offset: var(--border-width);
 }
 </style>

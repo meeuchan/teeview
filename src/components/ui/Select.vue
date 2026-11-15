@@ -115,9 +115,9 @@ function onKeydown(event: KeyboardEvent, index: number) {
 <style scoped lang="scss">
 .select-group {
   display: grid;
-  padding: 4px;
-  gap: 4px;
-  border-radius: 12px;
+  padding: var(--space-1);
+  gap: var(--space-1);
+  border-radius: var(--radius-lg);
   background: var(--color-pill);
   border: var(--border);
 
@@ -128,17 +128,17 @@ function onKeydown(event: KeyboardEvent, index: number) {
 
 .select-option {
   min-width: 0;
-  height: 32px;
-  padding: 0 8px;
+  min-height: var(--control-height);
+  padding: 0 var(--space-2);
 
-  border: 2px solid transparent;
-  border-radius: 8px;
+  border: var(--border-width) solid transparent;
+  border-radius: var(--radius-md);
 
   background: transparent;
   color: var(--color-subtle);
 
-  font-weight: 700;
-  font-size: 0.875rem;
+  font-weight: var(--font-weight-bold);
+  font-size: var(--font-size-md);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -157,7 +157,7 @@ function onKeydown(event: KeyboardEvent, index: number) {
 
   &[aria-checked='true'] {
     color: var(--color-primary);
-    border: 2px solid var(--color-primary);
+    border-color: var(--color-primary);
   }
 
   &:disabled {

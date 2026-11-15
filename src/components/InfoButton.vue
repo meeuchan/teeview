@@ -82,37 +82,31 @@ const thanks = [
   gap: 0.6rem;
 }
 
-.title-logo {
-  width: 32px;
-  height: 32px;
-  object-fit: contain;
-}
-
 .title-name {
   font-size: 1.35rem;
-  font-weight: 900;
+  font-weight: var(--font-weight-black);
 }
 
 .title-version {
-  padding: 0.1rem 0.5rem;
-  border-radius: 999px;
+  padding: 0.1rem var(--space-2);
+  border-radius: var(--radius-full);
   background: var(--color-pill);
   color: var(--color-subtle);
-  font-size: 0.75rem;
-  font-weight: 700;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
 }
 
 section + section {
-  margin-top: 1.5rem;
+  margin-top: var(--space-6);
 }
 
 h3 {
-  font-size: 0.75rem;
-  font-weight: 800;
-  letter-spacing: 0.075em;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-extrabold);
+  letter-spacing: var(--letter-spacing-caps);
   text-transform: uppercase;
   color: var(--color-subtle);
-  margin-bottom: 8px;
+  margin-bottom: var(--space-2);
 }
 
 .muted {
@@ -124,28 +118,28 @@ p {
 }
 
 .role {
-  font-size: 0.8rem;
+  font-size: var(--font-size-sm);
 }
 
 .developer {
-  margin-bottom: 12px;
+  margin-bottom: var(--space-3);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 8px 12px;
-  border-radius: 16px;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-xl);
   background: var(--color-surface);
 }
 
 .actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-top: 1rem;
+  gap: var(--space-2);
+  margin-top: var(--space-4);
 }
 
 .sources {
-  margin: 0.5rem 0 0;
+  margin: var(--space-2) 0 0;
   padding-left: 1.25rem;
 
   li + li {
@@ -155,7 +149,7 @@ p {
 
 .thanks {
   display: grid;
-  gap: 8px;
+  gap: var(--space-2);
   margin: 0;
   padding: 0;
   list-style: none;
@@ -164,8 +158,8 @@ p {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 8px 12px;
-    border-radius: 16px;
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-xl);
     background: var(--color-surface);
   }
 }

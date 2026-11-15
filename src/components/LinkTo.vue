@@ -14,7 +14,7 @@ const props = defineProps<{
   align-items: center;
   gap: 0.4rem;
   color: var(--color-primary);
-  font-weight: 700;
+  font-weight: var(--font-weight-bold);
   text-decoration: none;
   text-underline-offset: 3px;
 }

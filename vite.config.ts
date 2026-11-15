@@ -15,8 +15,8 @@ export default defineConfig({
       manifest: {
         name: 'TeeView',
         short_name: 'TeeView',
-        theme_color: '#ffffff',
-        background_color: '#ffffff',
+        theme_color: '#181b1a',
+        background_color: '#181b1a',
         display: 'standalone',
         icons: [
           { src: '/web-app-manifest-192x192.png', sizes: '192x192', type: 'image/png' },

@@ -57,13 +57,14 @@ const result = ref<HTMLCanvasElement>()
 <style lang="scss" scoped>
 .app {
   width: 100%;
-  max-width: 720px;
+  max-width: var(--content-width);
   margin: 0 auto;
-  padding: 0 16px;
+  padding: 0 var(--space-4);
 
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  min-height: 100dvh;
 }
 
 .header {
@@ -71,25 +72,25 @@ const result = ref<HTMLCanvasElement>()
   align-items: center;
   justify-content: space-between;
 
-  padding: 16px 0;
+  padding: var(--space-4) 0;
 }
 
 .header-links {
   display: flex;
-  gap: 12px;
+  gap: var(--space-3);
 }
 
 .main {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: 16px;
+  gap: var(--space-4);
 }
 
 .footer {
   margin-top: auto;
-  padding: 24px 0 16px;
+  padding: var(--space-6) 0 var(--space-4);
   text-align: center;
-  font-size: 0.8rem;
+  font-size: var(--font-size-sm);
   color: var(--color-subtle);
 }
 </style>

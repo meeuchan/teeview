@@ -38,7 +38,7 @@ const props = withDefaults(
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 4px;
+  gap: var(--space-1);
 
   border: none;
   white-space: nowrap;
@@ -55,13 +55,13 @@ const props = withDefaults(
 }
 
 .btn-normal {
-  height: 32px;
-  padding: 0 12px;
-  font-size: 0.875rem;
+  min-height: var(--control-height);
+  padding: 0 var(--space-3);
+  font-size: var(--font-size-md);
 
   :slotted(svg) {
-    width: 16px;
-    height: 16px;
+    width: 1rem;
+    height: 1rem;
   }
 }
 
@@ -72,7 +72,7 @@ const props = withDefaults(
 
 .btn-secondary {
   --btn-color-base: var(--color-bg);
-  --btn-color-text: var(--color-muted);
+  --btn-color-text: var(--color-text);
 }
 
 .btn-primary,
@@ -83,8 +83,8 @@ const props = withDefaults(
   color: var(--btn-color-text);
   margin-bottom: 2.5px;
 
-  border-radius: 8px;
-  font-weight: 700;
+  border-radius: var(--radius-md);
+  font-weight: var(--font-weight-bold);
   line-height: 1;
   box-shadow:
     0 2.5px 0 var(--btn-shadow-color),
@@ -115,7 +115,7 @@ const props = withDefaults(
 }
 
 .btn-icon {
-  --size-icon: 24px;
+  --size-icon: 1.5rem;
 
   width: var(--size-icon);
   height: var(--size-icon);

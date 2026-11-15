@@ -35,11 +35,12 @@ function onBackdropClick(event: MouseEvent) {
 
 <style scoped lang="scss">
 .dialog {
-  width: min(520px, calc(100vw - 2rem));
-  max-height: calc(100vh - 32px);
+  width: min(32.5rem, calc(100vw - 2 * var(--space-4)));
+  max-height: calc(100vh - 2 * var(--space-4));
+  max-height: calc(100dvh - 2 * var(--space-4));
   padding: 0;
   border: var(--border);
-  border-radius: 16px;
+  border-radius: var(--radius-xl);
   background: var(--color-card);
   color: var(--color-text);
   box-shadow: var(--shadow);
@@ -57,20 +58,20 @@ function onBackdropClick(event: MouseEvent) {
 .dialog-inner {
   display: flex;
   flex-direction: column;
-  max-height: calc(100vh - 2rem);
+  max-height: inherit;
 }
 
 .dialog-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1rem;
-  padding: 1rem 1rem 0.75rem 1.5rem;
+  gap: var(--space-4);
+  padding: var(--space-4) var(--space-4) var(--space-3) var(--space-6);
   border-bottom: var(--border);
 }
 
 .dialog-body {
-  padding: 24px;
+  padding: var(--space-6);
   overflow-y: auto;
 }
 

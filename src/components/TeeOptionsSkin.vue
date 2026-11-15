@@ -58,12 +58,14 @@ onMounted(async () => {
 </template>
 
 <style lang="scss" scoped>
+@use '@/assets/vars' as *;
+
 .container {
   display: grid;
-  gap: 16px;
+  gap: var(--space-4);
   align-items: start;
 
-  @media (min-width: 720px) {
+  @media (min-width: $breakpoint-md) {
     grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
   }
 }
@@ -71,6 +73,6 @@ onMounted(async () => {
 .skin-loader-container {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: var(--space-4);
 }
 </style>

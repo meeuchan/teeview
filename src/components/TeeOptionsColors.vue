@@ -71,16 +71,18 @@ function buildOptions() {
 </template>
 
 <style lang="scss" scoped>
+@use '@/assets/vars' as *;
+
 .container {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: var(--space-4);
 }
 
 .color-inputs {
   display: grid;
-  gap: 16px;
-  @media (min-width: 720px) {
+  gap: var(--space-4);
+  @media (min-width: $breakpoint-md) {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }

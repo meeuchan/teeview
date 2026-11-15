@@ -81,10 +81,10 @@ function clearError() {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
-  padding: 16px;
-  border: 2px dashed var(--color-border);
-  border-radius: 16px;
+  gap: var(--space-1);
+  padding: var(--space-4);
+  border: var(--border-width) dashed var(--color-border);
+  border-radius: var(--radius-xl);
   background: var(--color-pill);
   text-align: center;
   cursor: pointer;
@@ -115,7 +115,7 @@ function clearError() {
   place-items: center;
   width: 40px;
   height: 40px;
-  margin-bottom: 0.25rem;
+  margin-bottom: var(--space-1);
   border-radius: 50%;
   background: var(--color-pill);
   color: var(--color-primary);
@@ -139,7 +139,7 @@ function clearError() {
 }
 
 .dropzone-hint {
-  font-size: 0.75rem;
+  font-size: var(--font-size-xs);
   color: var(--color-subtle);
 }
 </style>

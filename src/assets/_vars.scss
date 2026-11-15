@@ -1,8 +1,23 @@
 @use 'sass:color';
 
+// Typography
 $font: 'Nunito', ui-rounded, system-ui, sans-serif;
-$font-weight-title: 900;
 
+$font-size-2xs: 0.625rem;
+$font-size-xs: 0.75rem;
+$font-size-sm: 0.8rem;
+$font-size-md: 0.875rem;
+$font-size-base: 1rem;
+$font-size-lg: 1.25rem;
+
+$font-weight-semibold: 600;
+$font-weight-bold: 700;
+$font-weight-extrabold: 800;
+$font-weight-black: 900;
+
+$letter-spacing-caps: 0.075em;
+
+// Colors
 $color-bg: #181b1a;
 $color-primary: #84deb3;
 $color-danger: #ff8358;
@@ -12,3 +27,31 @@ $color-border: #2e3d36;
 $color-card: #232c28;
 $color-surface: color.change($color-border, $alpha: 0.5);
 $color-pill: #181b1a;
+
+// Spacing
+$space-1: 0.25rem;
+$space-2: 0.5rem;
+$space-3: 0.75rem;
+$space-4: 1rem;
+$space-6: 1.5rem;
+
+// Radii
+$radius-sm: 4px;
+$radius-md: 8px;
+$radius-lg: 12px;
+$radius-xl: 16px;
+$radius-full: 999px;
+
+// Borders
+$border-width: 2px;
+$shadow:
+  0 3px 6px rgba(0, 0, 0, 0.1),
+  0 3px 6px rgba(0, 0, 0, 0.17);
+
+// Sizes of elements that contain text
+$control-height: 2rem;
+$input-height: 2.5rem;
+$content-width: 45rem;
+
+// Breakpoints
+$breakpoint-md: 45em;
