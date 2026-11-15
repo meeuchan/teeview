@@ -5,10 +5,21 @@ const props = defineProps<{
 </script>
 
 <template>
-  <a
-    :href="props.href"
-    target="_blank"
-    class="link-underline link-offset-2 link-underline-opacity-0 link-underline-opacity-100-hover"
-    ><slot></slot
-  ></a>
+  <a :href="props.href" target="_blank" rel="noopener" class="link"><slot></slot></a>
 </template>
+
+<style scoped>
+.link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--color-primary);
+  font-weight: 700;
+  text-decoration: none;
+  text-underline-offset: 3px;
+}
+
+.link:hover {
+  text-decoration: underline;
+}
+</style>
