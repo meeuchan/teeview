@@ -69,6 +69,6 @@ function buildOptions() {
 
 <style lang="scss" scoped>
 #teeOptions {
-  height: 256px;
+  min-height: 256px;
 }
 </style>

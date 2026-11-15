@@ -7,6 +7,7 @@ import type { IRendererOptions } from './lib/Renderer'
 import KofiIcon from './components/icons/KofiIcon.vue'
 import GitHubIcon from './components/icons/GitHubIcon.vue'
 import Button from './components/ui/Button.vue'
+import LinkTo from './components/LinkTo.vue'
 
 const options = ref<IRendererOptions>()
 const result = ref<HTMLCanvasElement>()
@@ -17,10 +18,20 @@ const result = ref<HTMLCanvasElement>()
     <header class="header">
       <h1>TeeView</h1>
       <div class="header-links">
-        <Button href="https://github.com/meeuchan/teeview" variant="ghost" size="icon" title="Open GitHub Repo">
+        <Button
+          href="https://github.com/meeuchan/teeview"
+          variant="ghost"
+          size="icon"
+          title="Open GitHub Repo"
+        >
           <GitHubIcon />
         </Button>
-        <Button href="https://ko-fi.com/meeuchan" variant="ghost" size="icon" title="Support Me on Ko-fi">
+        <Button
+          href="https://ko-fi.com/meeuchan"
+          variant="ghost"
+          size="icon"
+          title="Support Me on Ko-fi"
+        >
           <KofiIcon />
         </Button>
         <InfoButton />
@@ -35,6 +46,11 @@ const result = ref<HTMLCanvasElement>()
         <TeeOptions :result="result" @change="options = $event" />
       </aside>
     </main>
+
+    <footer class="footer">
+      Made by <LinkTo href="https://github.com/meeuchan">Meeu</LinkTo> ·
+      <LinkTo href="https://ko-fi.com/meeuchan">Support on Ko-fi</LinkTo>
+    </footer>
   </div>
 </template>
 
@@ -44,6 +60,10 @@ const result = ref<HTMLCanvasElement>()
   max-width: 720px;
   margin: 0 auto;
   padding: 0 16px;
+
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
 
 .header {
@@ -63,5 +83,13 @@ const result = ref<HTMLCanvasElement>()
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: 16px;
+}
+
+.footer {
+  margin-top: auto;
+  padding: 24px 0 16px;
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--color-subtle);
 }
 </style>
