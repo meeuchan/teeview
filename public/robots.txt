@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://teeview.meeu.me/sitemap.xml

@@ -5,8 +5,16 @@ import InputSkinUrl from './inputs/InputSkinUrl.vue'
 import InputSkinCommand from './inputs/InputSkinCommand.vue'
 import type { IColorPreset } from '@/lib/Tee'
 import { getImageFromUrl } from '@/utils'
+import Select from './ui/Select.vue'
+import SkinPreview from './SkinPreview.vue'
 
 type SkinInputMode = 'file' | 'url' | 'command'
+
+const modes: { label: string; value: SkinInputMode }[] = [
+  { label: 'File', value: 'file' },
+  { label: 'Name / URL', value: 'url' },
+  { label: 'Command', value: 'command' },
+]
 
 const mode = ref<SkinInputMode>('file')
 const skin = ref<HTMLImageElement>()
@@ -28,39 +36,43 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="container-fluid g-0">
-    <div class="row">
-      <div class="col-sm mb-3 mb-md-0">
-        <div class="d-flex align-items-center mb-3">
-          <span class="me-2">From:</span>
-          <div class="btn-group btn-group-sm" role="group" aria-label="Skin input mode">
-            <input id="skinModeFile" type="radio" class="btn-check" value="file" v-model="mode" autocomplete="off" />
-            <label class="btn btn-outline-primary" for="skinModeFile">File</label>
-
-            <input id="skinModeUrl" type="radio" class="btn-check" value="url" v-model="mode" autocomplete="off" />
-            <label class="btn btn-outline-primary" for="skinModeUrl">URL/Name</label>
-
-            <input id="skinModeCommand" type="radio" class="btn-check" value="command" v-model="mode"
-              autocomplete="off" />
-            <label class="btn btn-outline-primary" for="skinModeCommand">Command</label>
-          </div>
-        </div>
-
-        <div>
-          <InputSkinFile v-if="mode === 'file'" @input="setSkin($event)" />
-          <InputSkinUrl v-if="mode === 'url'" @input="setSkin($event)" />
-          <InputSkinCommand v-if="mode === 'command'" @input="setSkin($event)" @colors="emit('colors', $event)" />
-        </div>
+  <div class="container">
+    <div class="skin-loader-container">
+      <div class="field">
+        <span class="field-label">Load Tee From</span>
+        <Select v-model="mode" :options="modes" label="Skin source" />
       </div>
-      <div class="col-sm text-center text-md-end">
-        <img id="skinPreview" :src="skin?.src" v-if="skin?.src" class="img-thumbnail" />
-      </div>
+      <InputSkinFile v-if="mode === 'file'" @input="setSkin($event)" />
+      <InputSkinUrl v-if="mode === 'url'" @input="setSkin($event)" />
+      <InputSkinCommand
+        v-if="mode === 'command'"
+        @input="setSkin($event)"
+        @colors="emit('colors', $event)"
+      />
+    </div>
+
+    <div>
+      <SkinPreview :image="skin" label="Current skin" />
     </div>
   </div>
 </template>
 
 <style lang="scss" scoped>
-#skinPreview {
-  max-height: 128px;
+@use '@/assets/vars' as *;
+
+.container {
+  display: grid;
+  gap: var(--space-4);
+  align-items: start;
+
+  @media (min-width: $breakpoint-md) {
+    grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+  }
+}
+
+.skin-loader-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
 }
 </style>

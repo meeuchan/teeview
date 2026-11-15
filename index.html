@@ -3,29 +3,59 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>TeeView</title>
+    <title>TeeView – DDNet & Teeworlds Skin Viewer</title>
+    <meta
+      name="description"
+      content="Preview and download your Tee! TeeView is a free DDNet and Teeworlds skin viewer: load a skin by name, URL or file, customize colors, eyes and weapons, and export your tee as an image."
+    />
+    <link rel="canonical" href="https://teeview.meeu.me/" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#181b1a" />
+
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "TeeView",
+        "url": "https://teeview.meeu.me/",
+        "description": "Free DDNet and Teeworlds skin viewer. Preview, customize and download your tee.",
+        "applicationCategory": "GameApplication",
+        "operatingSystem": "Any",
+        "image": "https://teeview.meeu.me/opengraph.png",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+      }
+    </script>
 
     <!-- Facebook Meta Tags -->
     <meta property="og:url" content="https://teeview.meeu.me/" />
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="TeeView" />
-    <meta property="og:description" content="Preview and download your Tee!" />
+    <meta property="og:site_name" content="TeeView" />
+    <meta property="og:title" content="TeeView – DDNet & Teeworlds Skin Viewer" />
+    <meta
+      property="og:description"
+      content="Preview and download your Tee! Free DDNet & Teeworlds skin viewer with custom colors, eyes and weapons."
+    />
     <meta property="og:image" content="https://teeview.meeu.me/opengraph.png" />
+    <meta property="og:image:alt" content="TeeView – DDNet & Teeworlds skin viewer" />
 
     <!-- Twitter Meta Tags -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta property="twitter:domain" content="teeview.meeu.me" />
     <meta property="twitter:url" content="https://teeview.meeu.me/" />
-    <meta name="twitter:title" content="TeeView" />
-    <meta name="twitter:description" content="Preview and download your Tee!" />
+    <meta name="twitter:title" content="TeeView – DDNet & Teeworlds Skin Viewer" />
+    <meta
+      name="twitter:description"
+      content="Preview and download your Tee! Free DDNet & Teeworlds skin viewer with custom colors, eyes and weapons."
+    />
     <meta name="twitter:image" content="https://teeview.meeu.me/opengraph.png" />
 
     <!-- Favicon -->
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="shortcut icon" href="/favicon.ico" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <meta name="apple-mobile-web-app-title" content="TeeView" />
-    <link rel="manifest" href="/site.webmanifest" />
+    <!-- The web app manifest is generated and linked by vite-plugin-pwa (see vite.config.ts) -->
 
     <!-- Font -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -37,6 +67,10 @@
   </head>
   <body>
     <div id="app"></div>
+    <noscript>
+      <h1>TeeView – DDNet & Teeworlds Skin Viewer</h1>
+      <p>Preview and download your Tee! TeeView needs JavaScript enabled to run.</p>
+    </noscript>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

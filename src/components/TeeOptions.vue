@@ -9,7 +9,7 @@ import TeeOptionsPose, { type IPoseOptions } from './TeeOptionsPose.vue'
 import TeeOptionsColors from './TeeOptionsColors.vue'
 import TeeOptionsWeapon, { type IWeaponOptions } from './TeeOptionsWeapon.vue'
 import type { IColorPreset, ITeeColors } from '@/lib/Tee'
-import TeeOptionsDownload from './TeeOptionsDownload.vue'
+import TeeOptionsExport from './TeeOptionsExport.vue'
 
 const props = defineProps<{
   result?: HTMLCanvasElement
@@ -59,8 +59,8 @@ function buildOptions() {
         <Tab title="Weapon" :disabled="!skin" class="card-body">
           <TeeOptionsWeapon @change="((weaponOptions = $event), buildOptions())" />
         </Tab>
-        <Tab title="Download" :disabled="!skin" class="card-body">
-          <TeeOptionsDownload :result="props.result" />
+        <Tab title="Export" :disabled="!skin" class="card-body">
+          <TeeOptionsExport :result="props.result" />
         </Tab>
       </Tabs>
     </div>
@@ -69,6 +69,6 @@ function buildOptions() {
 
 <style lang="scss" scoped>
 #teeOptions {
-  height: 256px;
+  min-height: 256px;
 }
 </style>

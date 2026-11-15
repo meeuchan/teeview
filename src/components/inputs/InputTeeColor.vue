@@ -1,26 +1,45 @@
 <script setup lang="ts">
 import { RgbColor, TeeColor } from '@/lib/Color'
-import { onMounted, ref, useTemplateRef, watch } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 
-const defaultCode = 0x7F7F7F;
-const maxCode = 0xFFFFFF
+const defaultCode = 0x7f7f7f
+const maxCode = 0xffffff
 const defaultColor = 127
 const maxColor = 255
+const gradientSteps = 12
 
 const props = defineProps<{
   code?: number
   disabled?: boolean
+  label: string
 }>()
 
 const code = ref(props.code ?? defaultCode)
 const h = ref(defaultColor)
 const s = ref(defaultColor)
 const l = ref(defaultColor)
-const colorPreview = useTemplateRef('colorPreview')
 
 const emit = defineEmits<{
   input: [value: TeeColor]
 }>()
+
+const previewColor = computed(() =>
+  RgbColor.fromTeeColor(TeeColor.fromValues(h.value, s.value, l.value)).toString(),
+)
+
+const channels = computed(() => [
+  { key: 'h', label: 'Hue', model: h, gradient: gradient((v) => [v, s.value, l.value]) },
+  { key: 's', label: 'Sat', model: s, gradient: gradient((v) => [h.value, v, l.value]) },
+  { key: 'l', label: 'Light', model: l, gradient: gradient((v) => [h.value, s.value, v]) },
+])
+
+function gradient(toValues: (v: number) => [number, number, number]) {
+  const stops = Array.from({ length: gradientSteps + 1 }, (_, i) => {
+    const [hv, sv, lv] = toValues(Math.round((i / gradientSteps) * maxColor))
+    return RgbColor.fromTeeColor(TeeColor.fromValues(hv, sv, lv)).toString()
+  })
+  return `linear-gradient(to right, ${stops.join(', ')})`
+}
 
 watch(
   () => props.code,
@@ -31,22 +50,14 @@ watch(
 )
 
 watch(code, (value) => {
-  code.value = clampCodeValue(value)
+  code.value = clampValue(value, maxCode)
   updateColorFromCode()
 })
 
-watch(h, (value) => {
-  h.value = clampColorValue(value)
-  updateColorFromValues()
-})
-
-watch(s, (value) => {
-  s.value = clampColorValue(value)
-  updateColorFromValues()
-})
-
-watch(l, (value) => {
-  l.value = clampColorValue(value)
+watch([h, s, l], () => {
+  h.value = clampValue(h.value, maxColor)
+  s.value = clampValue(s.value, maxColor)
+  l.value = clampValue(l.value, maxColor)
   updateColorFromValues()
 })
 
@@ -55,117 +66,166 @@ function updateColorFromCode() {
   h.value = teeColor.h
   s.value = teeColor.s
   l.value = teeColor.l
-  const rgbColor = RgbColor.fromTeeColor(teeColor)
-
-  if (colorPreview.value) {
-    colorPreview.value.style.backgroundColor = rgbColor.toString()
-  }
-
   emit('input', teeColor)
 }
 
 function updateColorFromValues() {
   const teeColor = TeeColor.fromValues(h.value, s.value, l.value)
   code.value = teeColor.code
-  const rgbColor = RgbColor.fromTeeColor(teeColor)
-
-  if (colorPreview.value) {
-    colorPreview.value.style.backgroundColor = rgbColor.toString()
-  }
-
   emit('input', teeColor)
 }
 
-function clampCodeValue(value: number) {
-  if (value < 0) value = 0
-  if (value > maxCode) value = maxCode
-  return value
+function clampValue(value: number, max: number) {
+  if (typeof value !== 'number' || Number.isNaN(value)) return 0
+  return Math.min(Math.max(Math.round(value), 0), max)
 }
 
-function clampColorValue(value: number) {
-  if (value < 0) value = 0
-  if (value > maxColor) value = maxColor
-  return value
-}
-
-onMounted(updateColorFromValues)
+onMounted(updateColorFromCode)
 </script>
 
 <template>
-  <div class="row">
-    <div class="col">
-      <div id="colorPreview" ref="colorPreview"></div>
+  <fieldset class="color" :disabled="props.disabled" :aria-label="`${props.label} color`">
+    <div class="color-header">
+      <span class="swatch" :style="{ backgroundColor: previewColor }"></span>
+      <span class="color-label">{{ props.label }}</span>
+      <label class="code">
+        <span class="code-label">Code</span>
+        <input
+          v-model.number="code"
+          type="number"
+          min="0"
+          :max="maxCode"
+          class="input code-input"
+          :aria-label="`${props.label} color code`"
+        />
+      </label>
     </div>
 
-    <div class="col-8">
-    <div class="row mb-2">
-        <div class="input-group">
-          <span class="input-group-text">Code:</span>
-          <input
-            type="number"
-            min="0"
-            :max="maxCode"
-            v-model="code"
-            :disabled="disabled"
-            class="form-control"
-          />
-        </div>
-      </div>
-
-      <div class="row mb-2">
-        <div class="input-group">
-          <span class="input-group-text">Hue:</span>
-          <input
-            type="number"
-            min="0"
-            :max="maxColor"
-            v-model="h"
-            :disabled="disabled"
-            class="form-control"
-          />
-        </div>
-      </div>
-
-      <div class="row mb-2">
-        <div class="input-group">
-          <span class="input-group-text">Sat:</span>
-          <input
-            type="number"
-            min="0"
-            :max="maxColor"
-            v-model="s"
-            :disabled="disabled"
-            class="form-control"
-          />
-        </div>
-      </div>
-
-      <div class="row mb-2">
-        <div class="input-group">
-          <span class="input-group-text">Lht:</span>
-          <input
-            type="number"
-            min="0"
-            :max="maxColor"
-            v-model="l"
-            :disabled="disabled"
-            class="form-control"
-          />
-        </div>
-      </div>
+    <div v-for="channel in channels" :key="channel.key" class="channel">
+      <span class="channel-label">{{ channel.label }}</span>
+      <input
+        v-model.number="channel.model.value"
+        type="range"
+        min="0"
+        :max="maxColor"
+        class="slider"
+        :style="{ '--track': channel.gradient }"
+        :aria-label="`${props.label} ${channel.label}`"
+      />
+      <input
+        v-model.number="channel.model.value"
+        type="number"
+        min="0"
+        :max="maxColor"
+        class="input channel-input"
+        :aria-label="`${props.label} ${channel.label} value`"
+      />
     </div>
-  </div>
+  </fieldset>
 </template>
 
-<style lang="scss" scoped>
-#colorPreview {
-  width: 100%;
-  aspect-ratio: 1;
-  border: 1px solid var(--bs-border-color-translucent);
-  border-radius: var(--bs-border-radius);
+<style scoped lang="scss">
+.color {
+  margin: 0;
+  padding: var(--space-4);
+  border: none;
+  border-radius: var(--radius-xl);
+  background: var(--color-surface);
+  transition: opacity 0.2s;
+
+  &:disabled {
+    opacity: 0.5;
+  }
 }
 
-.input-group-text {
-  width: 3.75rem;
+.color-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-2);
+}
+
+.swatch {
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  border-radius: var(--radius-lg);
+  transition: background-color 0.1s;
+}
+
+.color-label {
+  font-weight: var(--font-weight-extrabold);
+  font-size: var(--font-size-base);
+}
+
+.code {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-left: auto;
+}
+
+.code-label,
+.channel-label {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-extrabold);
+  text-transform: uppercase;
+  letter-spacing: var(--letter-spacing-caps);
+  color: var(--color-subtle);
+}
+
+.code-input {
+  width: 6rem;
+  min-height: var(--control-height);
+  padding: var(--space-1) var(--space-2);
+  font-variant-numeric: tabular-nums;
+}
+
+.channel {
+  display: grid;
+  grid-template-columns: 3rem 1fr 3rem;
+  align-items: center;
+  gap: var(--space-2);
+
+  & + & {
+    margin-top: var(--space-2);
+  }
+}
+
+.channel-input {
+  min-height: var(--control-height);
+  padding: var(--space-1) var(--space-2);
+  font-variant-numeric: tabular-nums;
+}
+
+.slider {
+  width: 100%;
+  height: 16px;
+  margin: 0;
+  border-radius: var(--radius-full);
+  background: var(--track);
+  appearance: none;
+  cursor: pointer;
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+
+  &::-webkit-slider-thumb {
+    width: 20px;
+    height: 20px;
+    border: var(--border-width) solid var(--color-text);
+    border-radius: 50%;
+    background: transparent;
+    appearance: none;
+  }
+
+  &::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    border: var(--border-width) solid var(--color-text);
+    border-radius: 50%;
+    background: transparent;
+  }
 }
 </style>

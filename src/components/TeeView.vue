@@ -11,6 +11,8 @@ const props = defineProps<{
 const renderer = ref(new Renderer())
 const canvas = useTemplateRef('teePreview')
 
+const canvasScale = 0.625;
+
 const emit = defineEmits<{
   change: [value: HTMLCanvasElement]
 }>()
@@ -22,8 +24,8 @@ const hasWeapon = computed(
     !!props.options?.gameSkin,
 )
 const previewSize = computed(() => {
-  if (hasWeapon.value) return 480
-  return props.options?.ddFat ? 192 * DDFAT_BODY_SCALE : 192
+  if (hasWeapon.value) return 480 * canvasScale
+  return (props.options?.ddFat ? 192 * DDFAT_BODY_SCALE : 192) * canvasScale
 })
 
 onMounted(() => {
@@ -53,8 +55,18 @@ function renderTee(options: IRendererOptions) {
 </script>
 
 <template>
-  <div id="teeView" class="card d-flex align-items-center justify-content-center" :style="{ height: '480px' }">
+  <section id="teeView" class="card container checker">
     <canvas id="teePreview" ref="teePreview"
       :style="{ height: previewSize + 'px', width: previewSize + 'px' }"></canvas>
-  </div>
+  </section>
 </template>
+
+<style lang="scss" scoped>
+.container {
+  height: 300px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+</style>

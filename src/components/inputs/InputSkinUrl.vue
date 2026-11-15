@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { ref, useTemplateRef } from 'vue'
+import { ref } from 'vue'
 import { getSkinImageByNameOrUrl } from '@/utils'
+import ApplyButton from '../ApplyButton.vue'
 
-const input = useTemplateRef('fileInput')
-const hasInputChanged = ref(false)
+const value = ref('')
+const loading = ref(false)
 const inputError = ref<string | null>()
 
 const emit = defineEmits<{
@@ -13,41 +14,49 @@ const emit = defineEmits<{
 async function getSkin() {
   clearError()
 
-  const url = input.value?.value
+  const url = value.value.trim()
   if (!url) {
     setError('Please input something.')
     return
   }
 
+  loading.value = true
   try {
     const img = await getSkinImageByNameOrUrl(url)
-    hasInputChanged.value = true
     emit('input', img)
   } catch (e) {
     setError(e instanceof Error ? e.message : 'Invalid URL or skin name.')
+  } finally {
+    loading.value = false
   }
 }
 
 function setError(error: string) {
-  hasInputChanged.value = true
-  input.value?.setCustomValidity(error)
   inputError.value = error
 }
 
 function clearError() {
-  hasInputChanged.value = false
-  input.value?.setCustomValidity('')
   inputError.value = null
 }
 </script>
 
 <template>
-  <form @submit.prevent="" novalidate class="needs-validation position-relative"
-    :class="[hasInputChanged && 'was-validated']">
-    <div class="input-group has-validation">
-      <span class="input-group-text" id="basic-addon1">URL/Name</span>
-      <input ref="fileInput" type="text" @change="getSkin()" class="form-control me-1" required placeholder="default" />
-      <div class="invalid-tooltip">{{ inputError }}</div>
+  <form class="field" novalidate @submit.prevent="getSkin()">
+    <label for="skinUrlInput" class="field-label">Skin name or URL</label>
+    <input
+      id="skinUrlInput"
+      v-model="value"
+      type="text"
+      class="input"
+      placeholder="e.g. cammo, bluekitty, https://…/skin.png"
+      autocomplete="off"
+      spellcheck="false"
+      :aria-invalid="!!inputError || undefined"
+    />
+    <div class="field-footer">
+      <p v-if="inputError" class="field-error" role="alert">{{ inputError }}</p>
+      <p v-else class="field-hint">Names are looked up in the DDNet skin databases.</p>
+      <ApplyButton label="Load tee skin" :loading="loading" />
     </div>
   </form>
 </template>
