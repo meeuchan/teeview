@@ -97,7 +97,7 @@ const props = withDefaults(
       0 0 0 -5px var(--btn-shadow-color);
   }
 
-  &:active {
+  &:active:not(:disabled) {
     transform: translateY(2px) scale(0.97);
     box-shadow:
       0 0 0 var(--btn-shadow-color),
