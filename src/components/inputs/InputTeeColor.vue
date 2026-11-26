@@ -30,7 +30,7 @@ const previewColor = computed(() =>
 const channels = computed(() => [
   { key: 'h', label: 'Hue', model: h, gradient: gradient((v) => [v, s.value, l.value]) },
   { key: 's', label: 'Sat', model: s, gradient: gradient((v) => [h.value, v, l.value]) },
-  { key: 'l', label: 'Light', model: l, gradient: gradient((v) => [h.value, s.value, v]) },
+  { key: 'l', label: 'Lht', model: l, gradient: gradient((v) => [h.value, s.value, v]) },
 ])
 
 function gradient(toValues: (v: number) => [number, number, number]) {
@@ -183,7 +183,7 @@ onMounted(updateColorFromCode)
 
 .channel {
   display: grid;
-  grid-template-columns: 3rem 1fr 3rem;
+  grid-template-columns: 2rem 1fr 3rem;
   align-items: center;
   gap: var(--space-2);
 
